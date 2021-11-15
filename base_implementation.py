@@ -10,6 +10,107 @@ from constant_configuration import *
 from game_board_class import *
 
 
+def is_corner(current_coordinate, total_rows, total_columns, my_game_board_object):
+    row_coordinate, column_coordinate = current_coordinate
+    up_coordinate = row_coordinate -1, column_coordinate
+    if row_coordinate + 1 <= total_rows:
+        down_coordinate = row_coordinate + 1, column_coordinate
+    else:
+        down_coordinate = row_coordinate, column_coordinate
+    left_coordinate = row_coordinate, column_coordinate - 1
+    if column_coordinate + 1 <= total_columns:
+        right_coordinate = row_coordinate, column_coordinate + 1
+    else:
+        right_coordinate = row_coordinate, column_coordinate
+    if my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]) and my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]):
+        return True
+    if my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) and my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]):
+        return True
+    if my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]):
+        return True
+    if my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) and my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]):
+        return True
+
+    if my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]):
+        return True
+    if my_game_board_object.is_this_wall(right_coordinate[0],right_coordinate[1]) and my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]):
+        return True
+    return False
+
+
+def get_all_marked_row_blocks(current_row_count):
+    all_marked_row_blocks = list()
+    for key in state_value_table:
+        if key[0] == current_row_count:
+            all_marked_row_blocks.append(key)
+    return all_marked_row_blocks
+
+
+def find_all_nonmarked_row_blocks(all_marked_row_block, total_columns, current_row):
+    nonmarked_row_blocks = list()
+    for current_column in range(1, total_columns + 1):
+        if (current_row, current_column) not in all_marked_row_block:
+            nonmarked_row_blocks.append((current_row, current_column))
+    return nonmarked_row_blocks
+
+
+def is_influenced(non_mark_row, non_mark_column,total_rows, total_columns, my_game_board_object):
+    print("non_mark_row, non_mark_column = ", non_mark_row, non_mark_column)
+    if non_mark_row + 1 <= total_rows:
+        down_coordinate = non_mark_row + 1, non_mark_column
+    else:
+        down_coordinate = non_mark_row, non_mark_column
+    up_coordinate = non_mark_row - 1, non_mark_column
+
+    if non_mark_column + 1 <= total_columns:
+        right_coordinate = non_mark_row, non_mark_column + 1
+    else:
+        right_coordinate = non_mark_row, non_mark_column
+    left_coordinate = non_mark_row, non_mark_column - 1
+    print("up = ", up_coordinate, " left = ", left_coordinate, " down = ", down_coordinate, " right = ", right_coordinate)
+    if (my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]) or state_value_table[up_coordinate] == -1) and (my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) or state_value_table[left_coordinate] == -1):
+        return True
+    if (my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]) or state_value_table[
+        up_coordinate] == -1) and (
+            my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) or state_value_table[
+        right_coordinate] == -1):
+        return True
+
+    if (my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]) or state_value_table[down_coordinate] == -1) and (my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) or state_value_table[left_coordinate] == -1):
+        return True
+    if (my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]) or state_value_table[
+        down_coordinate] == -1) and (
+            my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) or state_value_table[
+        right_coordinate] == -1):
+        return True
+
+
+def update_between_state_value_table(my_game_board_object):
+    total_rows, total_columns = my_game_board_object.get_dimension()
+    for current_row_count in range(1, total_rows+1):
+        all_marked_row_block = get_all_marked_row_blocks(current_row_count)
+        non_marked_row_blocks = find_all_nonmarked_row_blocks(all_marked_row_block, total_columns, current_row_count)
+        print("for current row = ", current_row_count, " nonremarked row blocks = ", non_marked_row_blocks)
+        for non_mark_row, non_mark_column in non_marked_row_blocks:
+            if my_game_board_object.is_this_storage(non_mark_row, non_mark_column):
+                continue
+            if is_influenced(non_mark_row, non_mark_column,total_rows, total_columns, my_game_board_object):
+                state_value_table[(non_mark_row, non_mark_column)] = -1
+
+
+
+def update_corner_state_value_table(my_game_board_object: GameBoard):
+    total_rows, total_columns = my_game_board_object.get_dimension()
+    for current_row_count in range(1, total_rows+1):
+        for current_column_count in range(1, total_columns+1):
+            current_coordinate = (current_row_count, current_column_count)
+            if my_game_board_object.is_this_wall(current_row_count, current_column_count):
+                state_value_table[current_coordinate] = -1
+            if is_corner(current_coordinate, total_rows, total_columns, my_game_board_object):
+                if not my_game_board_object.is_this_storage(current_row_count, current_column_count):
+                    state_value_table[current_coordinate] = -1
+
+
 def make_move(command: str, my_game_board: GameBoard) -> GameBoard:
     """
     Make the move based on the given command

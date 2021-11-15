@@ -5,7 +5,7 @@ game_board_class.py: The GameBoard class file of the project sokoban for CS271
 __author__ = "Qi Hong Chen"
 __copyright__ = "Copyright 2021, The game of Sokoban game project"
 
-
+# TODO: Handle two boxes get stucked situation.
 class GameBoard:
     def __init__(self, board_dimension: tuple, num_wall: int, wall_coordinate: list, num_box: int, box_coordinate: list,
                  num_storage: int, storage_coordinate: list, agent_coordinate: tuple) -> None:
@@ -18,6 +18,9 @@ class GameBoard:
         self.storage_coordinate_list = storage_coordinate
         self.player_x_coordinate, self.player_y_coordinate = agent_coordinate
         self.recent_changed_box_coordinate = None
+
+    def get_dimension(self):
+        return self.height, self.weight
 
     def is_this_wall(self, coordinate_x: int, coordinate_y: int) -> bool:
         return (coordinate_x, coordinate_y) in self.wall_coordinate_list
