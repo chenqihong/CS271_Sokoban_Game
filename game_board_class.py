@@ -5,6 +5,7 @@ game_board_class.py: The GameBoard class file of the project sokoban for CS271
 __author__ = "Qi Hong Chen"
 __copyright__ = "Copyright 2021, The game of Sokoban game project"
 
+
 # TODO: Handle two boxes get stucked situation.
 class GameBoard:
     def __init__(self, board_dimension: tuple, num_wall: int, wall_coordinate: list, num_box: int, box_coordinate: list,
@@ -18,6 +19,15 @@ class GameBoard:
         self.storage_coordinate_list = storage_coordinate
         self.player_x_coordinate, self.player_y_coordinate = agent_coordinate
         self.recent_changed_box_coordinate = None
+        self.board = [[" " for _ in range(self.weight)] for _ in range(self.height)]
+
+        self.board[self.player_x_coordinate - 1][self.player_x_coordinate - 1] = "@"
+        for i in range(len(self.wall_coordinate_list)):
+            self.board[self.wall_coordinate_list[i][0] - 1][self.wall_coordinate_list[i][1] - 1] = "#"
+        for n in range(len(self.box_coordinate_list)):
+            self.board[self.box_coordinate_list[n][0] - 1][self.box_coordinate_list[n][1] - 1] = "$"
+        for r in range(len(self.storage_coordinate_list)):
+            self.board[self.storage_coordinate_list[r][0] - 1][self.storage_coordinate_list[r][1] - 1] = "+"
 
     def get_dimension(self):
         return self.height, self.weight
@@ -46,7 +56,8 @@ class GameBoard:
         if (self.player_x_coordinate, self.player_y_coordinate) in self.box_coordinate_list:
             self.update_box_coordinate(move, self.player_x_coordinate, self.player_y_coordinate)
 
-    def update_box_coordinate(self, box_move_dir: str, box_current_coordinate_x: int, box_current_coordinate_y: int) -> None:
+    def update_box_coordinate(self, box_move_dir: str, box_current_coordinate_x: int,
+                              box_current_coordinate_y: int) -> None:
         old_box_coordinate = (box_current_coordinate_x, box_current_coordinate_y)
         if box_move_dir == 'U':
             box_current_coordinate_x -= 1
@@ -67,7 +78,8 @@ class GameBoard:
     def is_box_reach_storage(self, box_coordinate_x, box_coordinate_y):
         return (box_coordinate_x, box_coordinate_y) in self.storage_coordinate_list
 
-    def wall_boundary_check(self, up_coordinate: tuple, down_coordinate: tuple, left_coordinate: tuple, right_coordinate: tuple) -> set:
+    def wall_boundary_check(self, up_coordinate: tuple, down_coordinate: tuple, left_coordinate: tuple,
+                            right_coordinate: tuple) -> set:
         removal_move_set = set()
         if up_coordinate in self.wall_coordinate_list:
             removal_move_set.add("U")
@@ -134,7 +146,8 @@ class GameBoard:
         right_coordinate = player_coordinate_x, player_coordinate_y + 1
         removal_move_set = self.wall_boundary_check(up_coordinate, down_coordinate, left_coordinate, right_coordinate)
         possible_moves_set = possible_moves_set.difference(removal_move_set)
-        removal_move_set = self.box_stuck_check(up_coordinate, down_coordinate, left_coordinate, right_coordinate, possible_moves_set)
+        removal_move_set = self.box_stuck_check(up_coordinate, down_coordinate, left_coordinate, right_coordinate,
+                                                possible_moves_set)
         possible_moves_set = possible_moves_set.difference(removal_move_set)
         return list(possible_moves_set)
 
@@ -143,3 +156,10 @@ class GameBoard:
 
     def get_recent_changed_box_coordinate(self):
         return self.recent_changed_box_coordinate
+
+    def show_board(self):
+        print()
+        for i in self.board:
+            for j in i:
+                print(j, end=" ")
+            print()
