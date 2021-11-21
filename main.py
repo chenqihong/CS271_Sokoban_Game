@@ -26,6 +26,7 @@ def main(my_game_board: GameBoard) -> None:
         update_UTC_table(simulation_result)
         simulation_choices_list = list()
         my_game_board = read_input(input_str)
+
     print("All Training Are Done")
     file_to_write = open(UCTSaveDir, 'wb')
     pickle.dump(UCT_table, file_to_write)
