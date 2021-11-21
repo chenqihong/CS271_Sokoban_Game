@@ -23,7 +23,6 @@ def start_simulation(my_game_board: GameBoard) -> bool:
         all_bfs_path = bfs(my_game_board)  # get all paths
         all_box_choices = list(all_bfs_path.keys())
         if not all_box_choices:
-            print("No more possible path")
             return False
         policy = decide_policy(list(all_bfs_path.keys()))  # 0 = random, 1 = greedy
         if policy:
