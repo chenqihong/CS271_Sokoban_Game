@@ -1,5 +1,5 @@
 """
-base_implementation.py: The base_implementation file of the project sokoban for CS271
+base_implementation.py: The base_implementation file of the project sokoban for CS271 for game board object only
 """
 
 __author__ = "Qi Hong Chen"
@@ -195,6 +195,13 @@ def read_input(input_file_dir: str) -> GameBoard:
     my_game_board = GameBoard(board_dimension, number_walls, wall_coordinate_list, number_boxes, boxes_coordinate_list,
                               number_storages, storage_coordinate_list, player_coordinate)
     return my_game_board
+
+
+def test_game(my_game_board: GameBoard) -> None:
+    """Test Game with the command"""
+    move_collections = ['None', 'L', 'U', 'U', 'U', 'U', 'R', 'U', 'U']
+    for move in move_collections:
+        my_game_board = make_move(move, my_game_board)
 
 
 

@@ -9,24 +9,50 @@ from constant_configuration import *
 from base_implementation import *
 from game_board_class import *
 from pathfinding import *
+from start_simulation_module import start_simulation
 
 
-def test_game(my_game_board: GameBoard) -> None:
-    """Test Game with the command"""
-    move_collections = ['None', 'L', 'U', 'U', 'U', 'U', 'R', 'U', 'U']
-    for move in move_collections:
-        my_game_board = make_move(move, my_game_board)
+def update_UTC_table(simulation_result: bool) -> None:
+    """
+    Update the UCT table for all nodes along the path based on the simulation result
+    @param simulation_result: The result of simulation, either win/lose
+    @return: None
+    """
+    for node_coordinate in simulation_choices_list:
+        win_games, total_games = UCT_table[node_coordinate]
+        if simulation_result:
+            win_games += 1
+            total_games += 1
+        else:
+            total_games += 1
+        UCT_table[node_coordinate] = (win_games, total_games)
+
+
+def main(my_game_board: GameBoard) -> None:
+    """
+    The main program of the game
+    @param my_game_board: The game board object
+    @return: None
+    """
+    global BaseEpsilon, simulation_choices_list
+    for current_training_times in range(TotalTrainingTimes):
+        BaseEpsilon -= 0.1 * current_training_times
+        simulation_result = start_simulation(my_game_board)
+        update_UTC_table(simulation_result)
+        simulation_choices_list = list()
+        my_game_board = read_input(input_str)
+    print("All Training Are Done")
+    file_to_write = open(UCTSaveDir, 'wb')
+    pickle.dump(UCT_table, file_to_write)
+    print("Done saving the UCT table to file")
 
 
 if __name__ == '__main__':
     input_str = "sokoban01.txt"
     board = read_input(input_str)
-    print(bfs(board))
+    all_bfs_path = bfs(board)  # get all paths
+    for key in all_bfs_path:
+        print("key = ", key, " val = ", all_bfs_path[key])
+    all_box_choices = list(all_bfs_path.keys())
+    main(board)
 
-
-    #update_corner_state_value_table(board)
-    #print("state_value_table = ", dict(state_value_table))
-    #update_between_state_value_table(board)
-    #for key in state_value_table:
-        #print("coordinate: ", key, " state value = ", state_value_table[key])
-    # test_game(my_game_board_object)

@@ -163,3 +163,10 @@ class GameBoard:
             for j in i:
                 print(j, end=" ")
             print()
+
+    def teleportation(self, x_coordinate, y_coordinate):
+        self.player_x_coordinate = x_coordinate
+        self.player_y_coordinate = y_coordinate
+
+    def is_any_box_reach_end(self):
+        return any(x in self.storage_coordinate_list for x in self.box_coordinate_list)

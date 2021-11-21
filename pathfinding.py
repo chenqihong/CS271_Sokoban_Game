@@ -58,10 +58,10 @@ def get_accessible_boxes(board: GameBoard):
 
 
 def get_direction(cord1, cord2):
-    if cord1[0] - cord2[0] == 1: return 'L'
-    if cord1[0] - cord2[0] == -1: return 'R'
-    if cord1[1] - cord2[1] == 1: return 'U'
-    if cord1[1] - cord2[1] == -1: return 'D'
+    if cord1[0] - cord2[0] == 1: return 'U'
+    if cord1[0] - cord2[0] == -1: return 'D'
+    if cord1[1] - cord2[1] == 1: return 'L'
+    if cord1[1] - cord2[1] == -1: return 'R'
 
 
 def bfs(board: GameBoard):
