@@ -10,7 +10,7 @@ from game_board_class import *
 from pathfinding import *
 from base_implementation_v2 import *
 from time import sleep
-from gui import graph
+
 
 def start_simulation(my_game_board: GameBoard) -> bool:
     """
@@ -18,32 +18,21 @@ def start_simulation(my_game_board: GameBoard) -> bool:
     @param my_game_board: The game board object
     @return: True if simulation success False otherwise
     """
-    g = graph()
 
     for current_step in range(TotalStepSize):
-        sleep(2)
         all_bfs_path = bfs(my_game_board)  # get all paths
-
-        filtered_box_choices = filter_box_choices(all_bfs_path)
-        for filtered_box_coordinate, action in filtered_box_choices:
-            del all_bfs_path[(filtered_box_coordinate, action)]
         all_box_choices = list(all_bfs_path.keys())
         if not all_box_choices:
             print("No more possible path")
             return False
         policy = decide_policy(list(all_bfs_path.keys()))  # 0 = random, 1 = greedy
         if policy:
-            print("greedy policy")
             selected_box_coordinate, action = get_greedy_choice(all_bfs_path)
         else:
-            print("random policy")
             selected_box_coordinate, action = random.choice(all_box_choices)
         next_to_board_coordinate_x, next_to_board_coordinate_y = all_bfs_path[(selected_box_coordinate, action)][-2]
         my_game_board.teleportation(next_to_board_coordinate_x, next_to_board_coordinate_y)
         my_game_board.update_current_player_coordinate(action)
-        g.move_player(my_game_board.get_current_player_coordinate())
-
-        g.move_box(my_game_board.get_all_boxes_position())
         if my_game_board.is_end_game():
             return True
     if my_game_board.is_any_box_reach_end():

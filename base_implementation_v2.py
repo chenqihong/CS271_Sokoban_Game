@@ -55,11 +55,3 @@ def update_UTC_table(simulation_result: bool) -> None:
         UCT_table[node_coordinate] = (win_games, total_games)
 
 
-def filter_box_choices(all_bfs_path: defaultdict) -> list:
-    """
-    Filter all possible choices and remove all coordinates who do not
-    @param all_bfs_path:
-    @return:
-    """
-    return []
-

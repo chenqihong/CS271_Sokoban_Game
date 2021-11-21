@@ -20,8 +20,9 @@ def main(my_game_board: GameBoard) -> None:
     @return: None
     """
     global BaseEpsilon, simulation_choices_list
+    start = time.time()
     for current_training_times in range(TotalTrainingTimes):
-        BaseEpsilon -= 0.1 * current_training_times
+        BaseEpsilon -= 0.0001 * current_training_times
         simulation_result = start_simulation(my_game_board)
         update_UTC_table(simulation_result)
         simulation_choices_list = list()
@@ -31,6 +32,8 @@ def main(my_game_board: GameBoard) -> None:
     file_to_write = open(UCTSaveDir, 'wb')
     pickle.dump(UCT_table, file_to_write)
     print("Done saving the UCT table to file")
+    end = time.time()
+    print("Running Time: ", end-start)
 
 
 if __name__ == '__main__':
