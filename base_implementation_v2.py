@@ -39,3 +39,27 @@ def get_greedy_choice(all_bfs_path: defaultdict) -> tuple:
     return max(new_UCT_dict, key=new_UCT_dict.get)
 
 
+def update_UTC_table(simulation_result: bool) -> None:
+    """
+    Update the UCT table for all nodes along the path based on the simulation result
+    @param simulation_result: The result of simulation, either win/lose
+    @return: None
+    """
+    for node_coordinate in simulation_choices_list:
+        win_games, total_games = UCT_table[node_coordinate]
+        if simulation_result:
+            win_games += 1
+            total_games += 1
+        else:
+            total_games += 1
+        UCT_table[node_coordinate] = (win_games, total_games)
+
+
+def filter_box_choices(all_bfs_path: defaultdict) -> list:
+    """
+    Filter all possible choices and remove all coordinates who do not
+    @param all_bfs_path:
+    @return:
+    """
+    return []
+

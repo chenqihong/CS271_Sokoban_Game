@@ -12,20 +12,7 @@ from pathfinding import *
 from start_simulation_module import start_simulation
 
 
-def update_UTC_table(simulation_result: bool) -> None:
-    """
-    Update the UCT table for all nodes along the path based on the simulation result
-    @param simulation_result: The result of simulation, either win/lose
-    @return: None
-    """
-    for node_coordinate in simulation_choices_list:
-        win_games, total_games = UCT_table[node_coordinate]
-        if simulation_result:
-            win_games += 1
-            total_games += 1
-        else:
-            total_games += 1
-        UCT_table[node_coordinate] = (win_games, total_games)
+
 
 
 def main(my_game_board: GameBoard) -> None:
@@ -50,9 +37,5 @@ def main(my_game_board: GameBoard) -> None:
 if __name__ == '__main__':
     input_str = "sokoban01.txt"
     board = read_input(input_str)
-    all_bfs_path = bfs(board)  # get all paths
-    for key in all_bfs_path:
-        print("key = ", key, " val = ", all_bfs_path[key])
-    all_box_choices = list(all_bfs_path.keys())
     main(board)
 
