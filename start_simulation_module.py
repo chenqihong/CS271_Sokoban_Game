@@ -34,7 +34,7 @@ def start_simulation(my_game_board: GameBoard) -> bool:
         else:
             print("random policy")
             selected_box_coordinate, action = random.choice(all_box_choices)
-        next_to_board_coordinate_x, next_to_board_coordinate_y = all_bfs_path[selected_box_coordinate][-2]
+        next_to_board_coordinate_x, next_to_board_coordinate_y = all_bfs_path[(selected_box_coordinate, action)][-2]
         my_game_board.teleportation(next_to_board_coordinate_x, next_to_board_coordinate_y)
         my_game_board.update_current_player_coordinate(action)
         if my_game_board.is_end_game():

@@ -10,9 +10,7 @@ from base_implementation import *
 from game_board_class import *
 from pathfinding import *
 from start_simulation_module import start_simulation
-
-
-
+from base_implementation_v2 import *
 
 
 def main(my_game_board: GameBoard) -> None:
