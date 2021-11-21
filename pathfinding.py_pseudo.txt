@@ -1,0 +1,165 @@
+"""
+
+Search algorithms that can be used FOR the sokoban solver.
+
+Includes:
+
+
+
+Breadth first search - Find all possible paths to the given box location
+
+                     - Check IF path to box is blocked, IF blocked, ignore box
+
+                     - Find reachable boxes only
+
+
+
+A* search - Find and use shortest possible path from start to goal node
+
+            WHILE also avoiding obstacles/walls
+
+            -- May not be as useful
+
+
+
+"""
+
+
+
+from game_board_class IMPORT *
+
+IMPORT collections
+
+
+
+
+
+DEFINE FUNCTION is_out_of_bounds(board_size, position):
+
+    """
+
+    :param board_size: Dimensions of board
+
+    :param position: Position to check
+
+    :RETURN: Whether the given position is out of board or not
+
+    """
+
+    IF position[0] > board_size[0] or position[1] > board_size[1]:
+
+        RETURN True
+
+    RETURN False
+
+
+
+
+
+DEFINE FUNCTION get_neighbors(board: GameBoard, position, goal):
+
+    """
+
+    :param board: current board state
+
+    :param position: coordinate on grid
+
+    :RETURN: neighbors: a list of neighboring coordinates FOR given position
+
+    """
+
+    SET possible_neighbors TO [(position[0] + 1, position[1]), (position[0] - 1, position[1]),
+
+                          (position[0], position[1] + 1), (position[0], position[1] - 1)]
+
+    SET valid_neighbors TO []
+
+
+
+    SET box TO board.box_coordinate_list.copy()
+
+    box.remove(goal)
+
+
+
+    # ignore walls when getting neighbors because cannot move to wall
+
+    # make sure found neighbor is inside the bounds of the game board
+
+    FOR neighbor IN possible_neighbors:
+
+        IF neighbor not IN board.wall_coordinate_list and neighbor not IN box and \
+
+                not is_out_of_bounds(board_size=board.get_dimension(), position=neighbor):
+
+            valid_neighbors.append(neighbor)
+
+
+
+    RETURN valid_neighbors
+
+
+
+
+
+DEFINE FUNCTION get_accessible_boxes(board: GameBoard):
+
+    # Do BFS path search on each box location
+
+    # If there is no path FOR box then it cannot be reached
+
+    # Not considering paths that include moving boxes (edge case)
+
+    PASS
+
+
+
+
+
+DEFINE FUNCTION bfs(board: GameBoard, box_location):
+
+    """
+
+    Returns all possible paths to location from player position
+
+    :param box_location: Location of box to be reached
+
+    :param board: Current game board state
+
+    :RETURN: all possible paths avoiding walls and other boxes
+
+                to box location
+    """
+
+    # Use Nodes to trace path
+
+    SET final_paths TO []
+
+    SET start_pos TO board.get_current_player_coordinate()
+
+    SET queue TO [[start_pos]]
+
+    WHILE queue:
+
+        SET cur_path TO queue.pop()
+
+        SET cur_pos TO cur_path[-1]
+
+        IF cur_pos EQUALS box_location:
+
+            final_paths.append(cur_path)
+
+            continue
+
+        FOR neighbor IN get_neighbors(board, cur_pos, box_location):
+
+            IF neighbor not IN cur_path:
+
+                SET new_path TO list(cur_path)
+
+                new_path.append(neighbor)
+
+                queue.append(new_path)
+
+    RETURN final_paths
+

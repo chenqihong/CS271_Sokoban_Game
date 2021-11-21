@@ -15,7 +15,7 @@ class graph:
         self.canvas = Canvas(self.root, width=self.width, height=self.height, bg="white")
         self.canvas.pack()
 
-        l = Label(self.root, text=" 1   2   3   4   5   6   7   8   9", font=("Courier", 16, "bold"))
+        l = Label(self.root, text="    1   2   3   4   5   6   7   8   9", font=("Courier", 16, "bold"))
         l.pack()
 
         f = open("sokoban01.txt", "r")

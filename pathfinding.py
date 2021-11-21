@@ -57,7 +57,14 @@ def get_accessible_boxes(board: GameBoard):
     pass
 
 
-def bfs(board: GameBoard, box_location):
+def get_direction(cord1, cord2):
+    if cord1[0] - cord2[0] == 1: return 'L'
+    if cord1[0] - cord2[0] == -1: return 'R'
+    if cord1[1] - cord2[1] == 1: return 'U'
+    if cord1[1] - cord2[1] == -1: return 'D'
+
+
+def bfs(board: GameBoard):
     """
     Returns all possible paths to location from player position
     :param box_location: Location of box to be reached
@@ -65,20 +72,25 @@ def bfs(board: GameBoard, box_location):
     :return: all possible paths avoiding walls and other boxes
                 to box location
     """
-    # Use Nodes to trace path
     final_paths = []
-    start_pos = board.get_current_player_coordinate()
-    queue = [[start_pos]]
-    while queue:
-        cur_path = queue.pop()
-        cur_pos = cur_path[-1]
+    for box in board.get_all_boxes_position():
+        # Use Nodes to trace path
 
-        if cur_pos == box_location:
-            final_paths.append(cur_path)
-            continue
-        for neighbor in get_neighbors(board, cur_pos, box_location):
-            if neighbor not in cur_path:
-                new_path = list(cur_path)
-                new_path.append(neighbor)
-                queue.append(new_path)
-    return final_paths
+        start_pos = board.get_current_player_coordinate()
+        queue = [[start_pos]]
+        while queue:
+            cur_path = queue.pop()
+            cur_pos = cur_path[-1]
+
+            if cur_pos == box:
+                final_paths.append(cur_path)
+                continue
+            for neighbor in get_neighbors(board, cur_pos, box):
+                if neighbor not in cur_path:
+                    new_path = list(cur_path)
+                    new_path.append(neighbor)
+                    queue.append(new_path)
+    results = dict()
+    for path in final_paths:
+        results[(path[-1],get_direction(path[-2], path[-1]))] = path
+    return results

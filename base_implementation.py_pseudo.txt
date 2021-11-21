@@ -1,0 +1,400 @@
+"""
+
+base_implementation.py: The base_implementation file of the project sokoban FOR CS271
+
+"""
+
+
+
+SET __author__ TO "Qi Hong Chen"
+
+SET __copyright__ TO "Copyright 2021, The game of Sokoban game project"
+
+
+
+
+
+from constant_configuration IMPORT *
+
+from game_board_class IMPORT *
+
+
+
+
+
+DEFINE FUNCTION is_corner(current_coordinate, total_rows, total_columns, my_game_board_object):
+
+    SET row_coordinate, column_coordinate TO current_coordinate
+
+    SET up_coordinate TO row_coordinate -1, column_coordinate
+
+    IF row_coordinate + 1 <= total_rows:
+
+        SET down_coordinate TO row_coordinate + 1, column_coordinate
+
+    ELSE:
+
+        SET down_coordinate TO row_coordinate, column_coordinate
+
+    SET left_coordinate TO row_coordinate, column_coordinate - 1
+
+    IF column_coordinate + 1 <= total_columns:
+
+        SET right_coordinate TO row_coordinate, column_coordinate + 1
+
+    ELSE:
+
+        SET right_coordinate TO row_coordinate, column_coordinate
+
+    IF my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]) and my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]):
+
+        RETURN True
+
+    IF my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) and my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]):
+
+        RETURN True
+
+    IF my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]):
+
+        RETURN True
+
+    IF my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) and my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]):
+
+        RETURN True
+
+
+
+    IF my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) and my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]):
+
+        RETURN True
+
+    IF my_game_board_object.is_this_wall(right_coordinate[0],right_coordinate[1]) and my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]):
+
+        RETURN True
+
+    RETURN False
+
+
+
+
+
+DEFINE FUNCTION get_all_marked_row_blocks(current_row_count):
+
+    SET all_marked_row_blocks TO list()
+
+    FOR key IN state_value_table:
+
+        IF key[0] EQUALS current_row_count:
+
+            all_marked_row_blocks.append(key)
+
+    RETURN all_marked_row_blocks
+
+
+
+
+
+DEFINE FUNCTION find_all_nonmarked_row_blocks(all_marked_row_block, total_columns, current_row):
+
+    SET nonmarked_row_blocks TO list()
+
+    FOR current_column IN range(1, total_columns + 1):
+
+        IF (current_row, current_column) not IN all_marked_row_block:
+
+            nonmarked_row_blocks.append((current_row, current_column))
+
+    RETURN nonmarked_row_blocks
+
+
+
+
+
+DEFINE FUNCTION is_influenced(non_mark_row, non_mark_column,total_rows, total_columns, my_game_board_object):
+
+    SET OUTPUT("non_mark_row, non_mark_column TO ", non_mark_row, non_mark_column)
+
+    IF non_mark_row + 1 <= total_rows:
+
+        SET down_coordinate TO non_mark_row + 1, non_mark_column
+
+    ELSE:
+
+        SET down_coordinate TO non_mark_row, non_mark_column
+
+    SET up_coordinate TO non_mark_row - 1, non_mark_column
+
+
+
+    IF non_mark_column + 1 <= total_columns:
+
+        SET right_coordinate TO non_mark_row, non_mark_column + 1
+
+    ELSE:
+
+        SET right_coordinate TO non_mark_row, non_mark_column
+
+    SET left_coordinate TO non_mark_row, non_mark_column - 1
+
+    SET OUTPUT("up TO ", up_coordinate, " left TO ", left_coordinate, " down TO ", down_coordinate, " right TO ", right_coordinate)
+
+    IF (my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]) or state_value_table[up_coordinate] EQUALS -1) and (my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) or state_value_table[left_coordinate] EQUALS -1):
+
+        RETURN True
+
+    IF (my_game_board_object.is_this_wall(up_coordinate[0], up_coordinate[1]) or state_value_table[
+
+        up_coordinate] EQUALS -1) and (
+
+            my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) or state_value_table[
+
+        right_coordinate] EQUALS -1):
+
+        RETURN True
+
+
+
+    IF (my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]) or state_value_table[down_coordinate] EQUALS -1) and (my_game_board_object.is_this_wall(left_coordinate[0], left_coordinate[1]) or state_value_table[left_coordinate] EQUALS -1):
+
+        RETURN True
+
+    IF (my_game_board_object.is_this_wall(down_coordinate[0], down_coordinate[1]) or state_value_table[
+
+        down_coordinate] EQUALS -1) and (
+
+            my_game_board_object.is_this_wall(right_coordinate[0], right_coordinate[1]) or state_value_table[
+
+        right_coordinate] EQUALS -1):
+
+        RETURN True
+
+
+
+
+
+DEFINE FUNCTION update_between_state_value_table(my_game_board_object):
+
+    SET total_rows, total_columns TO my_game_board_object.get_dimension()
+
+    FOR current_row_count IN range(1, total_rows+1):
+
+        SET all_marked_row_block TO get_all_marked_row_blocks(current_row_count)
+
+        SET non_marked_row_blocks TO find_all_nonmarked_row_blocks(all_marked_row_block, total_columns, current_row_count)
+
+        SET OUTPUT("for current row TO ", current_row_count, " nonremarked row blocks TO ", non_marked_row_blocks)
+
+        FOR non_mark_row, non_mark_column IN non_marked_row_blocks:
+
+            IF my_game_board_object.is_this_storage(non_mark_row, non_mark_column):
+
+                continue
+
+            IF is_influenced(non_mark_row, non_mark_column,total_rows, total_columns, my_game_board_object):
+
+                SET state_value_table[(non_mark_row, non_mark_column)] TO -1
+
+
+
+
+
+
+
+DEFINE FUNCTION update_corner_state_value_table(my_game_board_object: GameBoard):
+
+    SET total_rows, total_columns TO my_game_board_object.get_dimension()
+
+    FOR current_row_count IN range(1, total_rows+1):
+
+        FOR current_column_count IN range(1, total_columns+1):
+
+            SET current_coordinate TO (current_row_count, current_column_count)
+
+            IF my_game_board_object.is_this_wall(current_row_count, current_column_count):
+
+                SET state_value_table[current_coordinate] TO -1
+
+            IF is_corner(current_coordinate, total_rows, total_columns, my_game_board_object):
+
+                IF not my_game_board_object.is_this_storage(current_row_count, current_column_count):
+
+                    SET state_value_table[current_coordinate] TO -1
+
+
+
+
+
+DEFINE FUNCTION make_move(command: str, my_game_board: GameBoard) -> GameBoard:
+
+    """
+
+    Make the move based on the given command
+
+    @param command: legal moves such as up, down, left right
+
+    @param my_game_board: the game board object
+
+    @RETURN: the updated game board
+
+    """
+
+    IF command IN ALL_LEGAL_MOVES:
+
+        my_game_board.update_current_player_coordinate(command)
+
+    OUTPUT("<==============================================>")
+
+    SET current_player_coordinate TO my_game_board.get_current_player_coordinate()
+
+    SET OUTPUT("current agent coordinate TO ", current_player_coordinate)
+
+    SET possible_moves TO my_game_board.get_all_possible_moves(current_player_coordinate[0], current_player_coordinate[1])
+
+    OUTPUT("possible moves: ", possible_moves)
+
+    SET OUTPUT("boxes pos newly affected TO ", my_game_board.get_recent_changed_box_coordinate())
+
+    RETURN my_game_board
+
+
+
+
+
+DEFINE FUNCTION convert_to_coordinate_list(line_list: list) -> list:
+
+    """
+
+    Convert the given line to a list of tuples
+
+    @param line_list: The list extracted from the line of INPUT file
+
+    @RETURN: [(x_pos, y_pos), (x_pos1, y_pos1)]
+
+    """
+
+    SET coordinate_list TO list()
+
+    FOR i IN range(0, len(line_list), 2):
+
+        coordinate_list.append((line_list[i], line_list[i+1]))
+
+    RETURN coordinate_list
+
+
+
+
+
+DEFINE FUNCTION extract_INPUT_line(line: str, INPUT_type: str) -> tuple:
+
+    """
+
+    Given a line IN the INPUT file, extract the info.
+
+    @param line: The current line IN INPUT file
+
+    @param INPUT_type: The type FOR current line
+
+    @RETURN: game board information
+
+    """
+
+    SET line_list TO line.split(" ")
+
+    SET line_list TO [int(x) FOR x IN line_list]
+
+    IF INPUT_type EQUALS "size_map":
+
+        SET height, weight TO line_list
+
+        RETURN int(height), int(weight)
+
+    ELSEIF INPUT_type EQUALS "wall_info":
+
+        SET number_walls TO line_list[0]
+
+        SET all_walls_coordinates TO convert_to_coordinate_list(line_list[1:])
+
+        RETURN number_walls, all_walls_coordinates
+
+    ELSEIF INPUT_type EQUALS "box_info":
+
+        SET number_boxes TO line_list[0]
+
+        SET all_boxes_coordinates TO convert_to_coordinate_list(line_list[1:])
+
+        RETURN number_boxes, all_boxes_coordinates
+
+    ELSEIF INPUT_type EQUALS "storage_info":
+
+        SET number_storages TO line_list[0]
+
+        SET all_storages_coordinates TO convert_to_coordinate_list(line_list[1:])
+
+        RETURN number_storages, all_storages_coordinates
+
+    ELSEIF INPUT_type EQUALS "player_pos":
+
+        SET x_pos, y_pos TO line_list
+
+        RETURN x_pos, y_pos
+
+    ELSE:
+
+        RETURN "Error", "Error"
+
+
+
+
+
+DEFINE FUNCTION read_INPUT(INPUT_file_dir: str) -> GameBoard:
+
+    """
+
+    Read the INPUT from the INPUT file dir
+
+    @param INPUT_file_dir: the dir of the INPUT file
+
+    @RETURN: GameBoard object
+
+    """
+
+    with open(INPUT_file_dir, 'r') as f:
+
+        FOR line_count, line IN enumerate(f):
+
+            SET INPUT_type TO INPUT_conversion_dict[line_count]
+
+            SET line TO line.strip()
+
+            IF INPUT_type EQUALS "size_map":
+
+                SET board_dimension TO extract_INPUT_line(line, INPUT_type)
+
+            ELSEIF INPUT_type EQUALS "wall_info":
+
+                SET number_walls, wall_coordinate_list TO extract_INPUT_line(line, INPUT_type)
+
+            ELSEIF INPUT_type EQUALS "box_info":
+
+                SET number_boxes, boxes_coordinate_list TO extract_INPUT_line(line, INPUT_type)
+
+            ELSEIF INPUT_type EQUALS "storage_info":
+
+                SET number_storages, storage_coordinate_list TO extract_INPUT_line(line, INPUT_type)
+
+            ELSEIF INPUT_type EQUALS "player_pos":
+
+                SET player_coordinate TO extract_INPUT_line(line, INPUT_type)
+
+    SET my_game_board TO GameBoard(board_dimension, number_walls, wall_coordinate_list, number_boxes, boxes_coordinate_list,
+
+                              number_storages, storage_coordinate_list, player_coordinate)
+
+    RETURN my_game_board
+
+
+
+
+
+
+

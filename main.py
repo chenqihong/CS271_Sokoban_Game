@@ -21,9 +21,12 @@ def test_game(my_game_board: GameBoard) -> None:
 if __name__ == '__main__':
     input_str = "sokoban01.txt"
     board = read_input(input_str)
-    update_corner_state_value_table(board)
-    print("state_value_table = ", dict(state_value_table))
-    update_between_state_value_table(board)
-    for key in state_value_table:
-        print("coordinate: ", key, " state value = ", state_value_table[key])
+    print(bfs(board))
+
+
+    #update_corner_state_value_table(board)
+    #print("state_value_table = ", dict(state_value_table))
+    #update_between_state_value_table(board)
+    #for key in state_value_table:
+        #print("coordinate: ", key, " state value = ", state_value_table[key])
     # test_game(my_game_board_object)
