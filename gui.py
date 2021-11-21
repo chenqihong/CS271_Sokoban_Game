@@ -48,11 +48,13 @@ class graph(threading.Thread):
         for wall in walls:
             self.create_wall(wall[0], wall[1])
 
+        for goal in goals:
+            self.create_goal(goal[0], goal[1])
+
         for box in boxes:
             self.boxObjects.append(self.create_box(box[0], box[1]))
 
-        for goal in goals:
-            self.create_goal(goal[0], goal[1])
+
 
         self.player = self.create_player(int(player[0]), int(player[1]))
 
@@ -125,3 +127,4 @@ class graph(threading.Thread):
         x = int(cord[0] / self.zoom)
         y = int(cord[1] / self.zoom)
         print((x, y))
+g = graph()

@@ -20,7 +20,6 @@ class GameBoard:
         self.player_x_coordinate, self.player_y_coordinate = agent_coordinate
         self.recent_changed_box_coordinate = None
         self.board = [[" " for _ in range(self.weight)] for _ in range(self.height)]
-
         self.board[self.player_x_coordinate - 1][self.player_x_coordinate - 1] = "@"
         for i in range(len(self.wall_coordinate_list)):
             self.board[self.wall_coordinate_list[i][0] - 1][self.wall_coordinate_list[i][1] - 1] = "#"

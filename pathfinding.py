@@ -13,7 +13,7 @@ A* search - Find and use shortest possible path from start to goal node
 """
 
 from game_board_class import *
-import collections
+from constant_configuration import *
 
 
 def is_out_of_bounds(board_size, position):
@@ -92,5 +92,14 @@ def bfs(board: GameBoard):
                     queue.append(new_path)
     results = dict()
     for path in final_paths:
-        results[(path[-1],get_direction(path[-2], path[-1]))] = path
+        if path[-2][0] - path[-1][0] == 1:
+            next = (path[-1][0]-1,path[-1][1])
+        elif path[-2][0] - path[-1][0] == -1:
+            next = (path[-1][0]+1,path[-1][1])
+        elif path[-2][1] - path[-1][1] == 1:
+            next = (path[-1][0],path[-1][1]-1)
+        elif path[-2][1] - path[-1][1] == -1:
+            next = (path[-1][0],path[-1][1]+1)
+        if not (board.is_this_wall(next[0], next[1]) or board.is_this_box(next[0], next[1]) or state_value_table[next]==-1):
+            results[(path[-1],get_direction(path[-2], path[-1]))] = path
     return results

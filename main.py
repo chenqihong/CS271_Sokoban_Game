@@ -36,5 +36,6 @@ def main(my_game_board: GameBoard) -> None:
 if __name__ == '__main__':
     input_str = "sokoban01.txt"
     board = read_input(input_str)
+    update_corner_state_value_table(board)
     main(board)
 
