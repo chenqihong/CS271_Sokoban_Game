@@ -28,7 +28,7 @@ def start_simulation(my_game_board: GameBoard) -> None:
         # print("find all paths takes: ", end - start)
         all_box_choices = list(all_bfs_path.keys())
         if not all_box_choices:
-            simulation_choices_list.append((selected_box_coordinate, action, -2000))
+            simulation_choices_list.append((selected_box_coordinate, action, -500))
             return
         # start = time.time()
         policy = decide_policy(list(all_bfs_path.keys()))  # 0 = random, 1 = greedy
@@ -49,9 +49,9 @@ def start_simulation(my_game_board: GameBoard) -> None:
         # end = time.time()
         # print("make move takes: ", end - start)
         if my_game_board.is_any_box_reach_end():
-            reward = 10
-        elif my_game_board.is_end_game():
             reward = 1000
+        elif my_game_board.is_end_game():
+            reward = 10000
         else:
             reward = -1
         simulation_choices_list.append((selected_box_coordinate, action, reward))
