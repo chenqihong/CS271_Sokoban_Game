@@ -24,7 +24,7 @@ def main(my_game_board: GameBoard) -> None:
     start = time.time()
     for current_training_times in range(TotalTrainingTimes):
         print("Doing iteration: ", current_training_times)
-        BaseEpsilon -= 0.0001 * current_training_times
+        BaseEpsilon -= 0.001 * current_training_times
         start_simulation(my_game_board)
         update_UTC_table()
         simulation_choices_list = list()

@@ -13,11 +13,11 @@ import time
 input_conversion_dict = {0: "size_map", 1: "wall_info", 2: "box_info", 3: "storage_info", 4: "player_pos"}
 ALL_LEGAL_MOVES = ['U', 'D', 'L', 'R']
 state_value_table = defaultdict(int)
-TotalTrainingTimes = 10000
+TotalTrainingTimes = 500
 BaseEpsilon = 1
 simulation_choices_list = []
 UCT_table = defaultdict(float)
 UCTSaveDir = "UTC_Table.pickle"
-TotalStepSize = 1000
+TotalStepSize = 50
 returns = defaultdict(list)
 
