@@ -44,9 +44,10 @@ def update_UTC_table() -> None:
     """
     G = 0
     simulation_choices_list.reverse()
-    for node_coordinate, action, reward in simulation_choices_list:
+    for count in range(len(simulation_choices_list)):
+        node_coordinate, action, reward = simulation_choices_list[count]
         state_action = node_coordinate, action
-        G += reward
+        G += gamma ** count * reward
         if state_action in UCT_table:
             returns[state_action].append(G)
         else:

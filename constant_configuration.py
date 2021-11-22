@@ -19,5 +19,6 @@ simulation_choices_list = []
 UCT_table = defaultdict(float)
 UCTSaveDir = "UTC_Table.pickle"
 TotalStepSize = 50
+gamma = 0.9
 returns = defaultdict(list)
 
