@@ -9,7 +9,7 @@ from constant_configuration import *
 from game_board_class import *
 
 
-def decide_policy(all_reachable_boxes: list) -> int:
+def decide_policy(all_reachable_boxes: list, BaseEpsilon: float) -> int:
     """
     Determines the policy: random or greedy
     @param all_reachable_boxes: list of tuples (box_pos, last_move_to_that_box)
@@ -20,7 +20,8 @@ def decide_policy(all_reachable_boxes: list) -> int:
             return 0
 
     # All boxes have some UCT values
-    if BaseEpsilon > 0.3:
+    # print("current BaseEpsilon = ", BaseEpsilon)
+    if BaseEpsilon > 0.2:
         return 0
     return 1
 
@@ -48,6 +49,7 @@ def update_UTC_table() -> None:
         node_coordinate, action, reward = simulation_choices_list[count]
         state_action = node_coordinate, action
         G += gamma ** count * reward
+         #print("count = ", count,"state action = ", state_action, " G = ", G)
         if state_action in UCT_table:
             returns[state_action].append(G)
         else:

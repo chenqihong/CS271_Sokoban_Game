@@ -72,6 +72,8 @@ class GameBoard:
         self.box_coordinate_list.append(new_box_coordinate)
 
     def is_end_game(self):
+        # print("self.box_coordinate_list = ", self.box_coordinate_list)
+        # print("self.storage_coordinate_list = ", self.storage_coordinate_list)
         return self.box_coordinate_list == self.storage_coordinate_list
 
     def is_box_reach_storage(self, box_coordinate_x, box_coordinate_y):
@@ -169,3 +171,20 @@ class GameBoard:
 
     def is_any_box_reach_end(self):
         return any(x in self.storage_coordinate_list for x in self.box_coordinate_list)
+
+    def get_number_box_done(self):
+        count = 0
+        for box_coordinate in self.box_coordinate_list:
+            if box_coordinate in self.storage_coordinate_list:
+                count += 1
+        return count
+
+    def update_board(self):
+        self.board = [[" " for _ in range(self.weight)] for _ in range(self.height)]
+        self.board[self.player_x_coordinate - 1][self.player_x_coordinate - 1] = "@"
+        for i in range(len(self.wall_coordinate_list)):
+            self.board[self.wall_coordinate_list[i][0] - 1][self.wall_coordinate_list[i][1] - 1] = "#"
+        for n in range(len(self.box_coordinate_list)):
+            self.board[self.box_coordinate_list[n][0] - 1][self.box_coordinate_list[n][1] - 1] = "$"
+        for r in range(len(self.storage_coordinate_list)):
+            self.board[self.storage_coordinate_list[r][0] - 1][self.storage_coordinate_list[r][1] - 1] = "+"

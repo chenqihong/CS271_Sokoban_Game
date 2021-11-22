@@ -20,14 +20,18 @@ def main(my_game_board: GameBoard) -> None:
     @param my_game_board: The game board object
     @return: None
     """
-    global BaseEpsilon, simulation_choices_list
+    global simulation_choices_list, total_number_boxes_done
+
     start = time.time()
     for current_training_times in range(TotalTrainingTimes):
+        BaseEpsilon = 1
         print("Doing iteration: ", current_training_times)
-        BaseEpsilon -= 0.001 * current_training_times
-        start_simulation(my_game_board)
+        BaseEpsilon = BaseEpsilon - 0.0001 * current_training_times
+
+        start_simulation(my_game_board, BaseEpsilon)
         update_UTC_table()
         simulation_choices_list = list()
+        total_number_boxes_done = 0
         my_game_board = read_input(input_str)
 
     print("All Training Are Done")
@@ -42,6 +46,7 @@ if __name__ == '__main__':
     input_str = "sokoban01.txt"
     board = read_input(input_str)
     update_corner_state_value_table(board)
+    # update_between_state_value_table(board)
     main(board)
 
     print("UTC_Table = ", dict(UCT_table))
