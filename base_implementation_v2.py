@@ -31,8 +31,10 @@ def get_greedy_choice(all_bfs_path: defaultdict) -> tuple:
     @param all_bfs_path: {((x,y), U): (3/5)}
     @return: ((x,y), U)
     """
-
-    return max(UCT_table, key=UCT_table.get)
+    temp_UCT_table_dict = defaultdict(float)
+    for coordinate, action in all_bfs_path:
+        temp_UCT_table_dict[(coordinate, action)] = UCT_table[(coordinate, action)]
+    return max(temp_UCT_table_dict, key=temp_UCT_table_dict.get)
 
 
 def update_UTC_table() -> None:
