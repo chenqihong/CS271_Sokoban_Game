@@ -16,8 +16,8 @@ state_value_table = defaultdict(int)
 TotalTrainingTimes = 10000
 BaseEpsilon = 1
 simulation_choices_list = []
-UCT_table = defaultdict(tuple)
+UCT_table = defaultdict(float)
 UCTSaveDir = "UTC_Table.pickle"
 TotalStepSize = 1000
-
+returns = defaultdict(list)
 

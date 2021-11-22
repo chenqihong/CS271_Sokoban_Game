@@ -11,6 +11,7 @@ from game_board_class import *
 from pathfinding import *
 from start_simulation_module import start_simulation
 from base_implementation_v2 import *
+from evaluate_module import evaluate
 
 
 def main(my_game_board: GameBoard) -> None:
@@ -22,9 +23,10 @@ def main(my_game_board: GameBoard) -> None:
     global BaseEpsilon, simulation_choices_list
     start = time.time()
     for current_training_times in range(TotalTrainingTimes):
+        print("Doing iteration: ", current_training_times)
         BaseEpsilon -= 0.0001 * current_training_times
-        simulation_result = start_simulation(my_game_board)
-        update_UTC_table(simulation_result)
+        start_simulation(my_game_board)
+        update_UTC_table()
         simulation_choices_list = list()
         my_game_board = read_input(input_str)
 
@@ -42,3 +44,8 @@ if __name__ == '__main__':
     update_corner_state_value_table(board)
     main(board)
 
+    print("UTC_Table = ", dict(UCT_table))
+    board = read_input(input_str)
+    print("Start evaluating")
+    evaluation_result = evaluate(board)
+    print("Result: ", evaluation_result)

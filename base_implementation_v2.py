@@ -20,7 +20,7 @@ def decide_policy(all_reachable_boxes: list) -> int:
             return 0
 
     # All boxes have some UCT values
-    if random.random() <= BaseEpsilon:
+    if BaseEpsilon > 0.3:
         return 0
     return 1
 
@@ -31,27 +31,27 @@ def get_greedy_choice(all_bfs_path: defaultdict) -> tuple:
     @param all_bfs_path: {((x,y), U): (3/5)}
     @return: ((x,y), U)
     """
-    new_UCT_dict = defaultdict(float)
-    for coordinate, action in all_bfs_path:
-        win_games, total_games = UCT_table[(coordinate, action)]
-        win_rate = win_games/total_games
-        new_UCT_dict[(coordinate, action)] = win_rate
-    return max(new_UCT_dict, key=new_UCT_dict.get)
+
+    return max(UCT_table, key=UCT_table.get)
 
 
-def update_UTC_table(simulation_result: bool) -> None:
+def update_UTC_table() -> None:
     """
     Update the UCT table for all nodes along the path based on the simulation result
-    @param simulation_result: The result of simulation, either win/lose
     @return: None
     """
-    for node_coordinate in simulation_choices_list:
-        win_games, total_games = UCT_table[node_coordinate]
-        if simulation_result:
-            win_games += 1
-            total_games += 1
+    G = 0
+    simulation_choices_list.reverse()
+    for node_coordinate, action, reward in simulation_choices_list:
+        state_action = node_coordinate, action
+        G += reward
+        if state_action in UCT_table:
+            returns[state_action].append(G)
         else:
-            total_games += 1
-        UCT_table[node_coordinate] = (win_games, total_games)
+            returns[state_action] = [G]
+
+        UCT_table[state_action] = sum(returns[state_action])/len(returns[state_action])
+
+
 
 
