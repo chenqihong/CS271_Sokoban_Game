@@ -7,8 +7,8 @@ __copyright__ = "Copyright 2021, The game of Sokoban game project"
 
 from collections import defaultdict
 import pickle
-import random
-import time
+from random import random, choice
+from time import time
 
 
 input_conversion_dict = {0: "size_map", 1: "wall_info", 2: "box_info", 3: "storage_info", 4: "player_pos"}
@@ -17,9 +17,9 @@ state_value_table = set()
 TotalTrainingTimes = 2000
 
 Q_table = defaultdict(lambda: defaultdict(float))
-
 QTableSaveDir = "Qtable.pickle"
 TotalStepSize = 10000
-gamma = 0.9
-learningRate = 0.3
+gamma = 0.85
+learningRate = 0.2
+box_state_value_table = set()
 

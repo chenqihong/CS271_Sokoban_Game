@@ -15,13 +15,14 @@ from evaluate_module import evaluate
 
 
 def main(my_game_board: GameBoard):
-    start = time.time()
+    global picked_box_action_list
+    start = time()
     for current_training_time in range(TotalTrainingTimes):
         print("Doing iteration: ", current_training_time)
         BaseEpsilon = 1 - 0.0001 * current_training_time
         training(my_game_board, BaseEpsilon)
         my_game_board.reset_board()
-    end = time.time()
+    end = time()
     print("Training total times: ", end - start)
 
 

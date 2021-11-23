@@ -19,7 +19,7 @@ def decide_policy(all_reachable_boxes: list, BaseEpsilon: float, current_state) 
     if current_state not in Q_table:
         return 0
     # All boxes have some Q values
-    random_val = random.random()
+    random_val = random()
     if BaseEpsilon > random_val:
         return 0
     return 1
@@ -40,7 +40,6 @@ def get_greedy_choice(current_state: str, all_reachable_boxes: list) -> tuple:
 
 
 def update_Q_Value(current_state, selected_box_coordinate, action, reward, next_state):
-    # print("updating key as ", str(old_player_position) + str(box_coordinate_list))
     Q_predict = Q_table[current_state][(selected_box_coordinate, action)]
     if next_state in Q_table:
         Q_target = reward + gamma * ( max(Q_table[next_state].values() ) )

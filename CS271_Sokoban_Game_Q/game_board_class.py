@@ -5,6 +5,7 @@ game_board_class.py: The GameBoard class file of the project sokoban for CS271
 __author__ = "Qi Hong Chen"
 __copyright__ = "Copyright 2021, The game of Sokoban game project"
 
+
 class GameBoard:
     def __init__(self, board_dimension: tuple, num_wall: int, wall_coordinate: list, num_box: int, box_coordinate: list,
                  num_storage: int, storage_coordinate: list, agent_coordinate: tuple) -> None:
