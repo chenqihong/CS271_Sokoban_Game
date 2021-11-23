@@ -23,7 +23,8 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     global total_number_boxes_done
     for current_step in range(TotalStepSize):
         all_bfs_path = bfs(my_game_board)  # get all paths
-
+        if ((3, 4), 'L') in all_bfs_path:
+            print("chance are here")
         all_box_choices = list(all_bfs_path.keys())
         if not all_box_choices:
             simulation_choices_list.append((selected_box_coordinate, action, -20))
@@ -35,6 +36,8 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
             selected_box_coordinate, action = get_greedy_choice(all_bfs_path)
         else:
             selected_box_coordinate, action = random.choice(all_box_choices)
+        if selected_box_coordinate == (3, 4) and action == 'L':
+            print("target selected !!, policy = ", policy)
 
         next_to_board_coordinate_x, next_to_board_coordinate_y = all_bfs_path[(selected_box_coordinate, action)][-2]
         my_game_board.teleportation(next_to_board_coordinate_x, next_to_board_coordinate_y)

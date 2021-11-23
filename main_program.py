@@ -26,13 +26,14 @@ def main(my_game_board: GameBoard) -> None:
     for current_training_times in range(TotalTrainingTimes):
         BaseEpsilon = 1.2
         print("Doing iteration: ", current_training_times)
+
         BaseEpsilon = BaseEpsilon - 0.001 * current_training_times
 
         start_simulation(my_game_board, BaseEpsilon)
         update_UCT_table()
         simulation_choices_list = list()
         total_number_boxes_done = 0
-        my_game_board = read_input(input_str)
+        my_game_board.reset_board()
 
     print("All Training Are Done")
     file_to_write = open(UCTSaveDir, 'wb')

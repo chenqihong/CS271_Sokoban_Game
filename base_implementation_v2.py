@@ -13,6 +13,7 @@ def decide_policy(all_reachable_boxes: list, BaseEpsilon: float) -> int:
     """
     Determines the policy: random or greedy
     @param all_reachable_boxes: list of tuples (box_pos, last_move_to_that_box)
+    @param BaseEpsilon: used to determine which policy to go for.
     @return: 0 if random, 1 if greedy
     """
     for box_pos, action in all_reachable_boxes:
@@ -20,8 +21,8 @@ def decide_policy(all_reachable_boxes: list, BaseEpsilon: float) -> int:
             return 0
 
     # All boxes have some UCT values
-    # print("current BaseEpsilon = ", BaseEpsilon)
-    if BaseEpsilon > 0.2:
+    random_val = random.random()
+    if BaseEpsilon > random_val:
         return 0
     return 1
 

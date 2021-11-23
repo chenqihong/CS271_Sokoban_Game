@@ -21,7 +21,7 @@ UCT_table = defaultdict(float)
 
 UCTSaveDir = "UTC_Table.pickle"
 TotalStepSize = 40
-gamma = 0.84
+gamma = 0.9
 returns = defaultdict(list)
 total_number_boxes_done = 0
 

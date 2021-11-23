@@ -12,16 +12,18 @@ class GameBoard:
                  num_storage: int, storage_coordinate: list, agent_coordinate: tuple) -> None:
 
         self.height, self.weight = board_dimension
-
         self.number_walls = num_wall
         self.wall_coordinate_list = wall_coordinate
-
+        self.wall_coordinate_list_copy = tuple(wall_coordinate)
         self.number_boxes = num_box
 
         self.box_coordinate_list = box_coordinate
+        self.box_coordinate_list_copy = tuple(box_coordinate)
         self.number_storages = num_storage
         self.storage_coordinate_list = storage_coordinate
+        self.storage_coordinate_list_copy = tuple(storage_coordinate)
         self.player_x_coordinate, self.player_y_coordinate = agent_coordinate
+        self.player_x_coordinate_copy, self.player_y_coordinate_copy = agent_coordinate
         self.recent_changed_box_coordinate = None
         self.board = [[" " for _ in range(self.weight)] for _ in range(self.height)]
         self.board[self.player_x_coordinate - 1][self.player_x_coordinate - 1] = "@"
@@ -31,6 +33,12 @@ class GameBoard:
             self.board[self.box_coordinate_list[n][0] - 1][self.box_coordinate_list[n][1] - 1] = "$"
         for r in range(len(self.storage_coordinate_list)):
             self.board[self.storage_coordinate_list[r][0] - 1][self.storage_coordinate_list[r][1] - 1] = "+"
+
+    def reset_board(self):
+        self.box_coordinate_list = list(self.box_coordinate_list_copy)
+        self.wall_coordinate_list = list(self.wall_coordinate_list_copy)
+        self.storage_coordinate_list = list(self.storage_coordinate_list_copy)
+        self.player_x_coordinate, self.player_y_coordinate = self.player_x_coordinate_copy, self.player_y_coordinate_copy
 
     def get_dimension(self):
         return self.height, self.weight
