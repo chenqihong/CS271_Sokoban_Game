@@ -22,7 +22,6 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     """
     global total_number_boxes_done
     for current_step in range(TotalStepSize):
-
         all_bfs_path = bfs(my_game_board)  # get all paths
 
         all_box_choices = list(all_bfs_path.keys())
@@ -48,7 +47,10 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
                 reward = 350
                 total_number_boxes_done = number_boxes_done_now
             else:
-                reward = -5
+                if simulation_choices_list.count((selected_box_coordinate, action)) > 2:
+                    reward = simulation_choices_list.count((selected_box_coordinate, action)) * -5
+                else:
+                    reward = -5
         elif my_game_board.is_end_game():
             reward = 1000
         elif simulation_choices_list.count((selected_box_coordinate, action)) > 2:

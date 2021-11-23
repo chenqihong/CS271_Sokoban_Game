@@ -10,10 +10,14 @@ __copyright__ = "Copyright 2021, The game of Sokoban game project"
 class GameBoard:
     def __init__(self, board_dimension: tuple, num_wall: int, wall_coordinate: list, num_box: int, box_coordinate: list,
                  num_storage: int, storage_coordinate: list, agent_coordinate: tuple) -> None:
+
         self.height, self.weight = board_dimension
+
         self.number_walls = num_wall
         self.wall_coordinate_list = wall_coordinate
+
         self.number_boxes = num_box
+
         self.box_coordinate_list = box_coordinate
         self.number_storages = num_storage
         self.storage_coordinate_list = storage_coordinate

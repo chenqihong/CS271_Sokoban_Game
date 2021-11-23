@@ -38,7 +38,7 @@ def get_greedy_choice(all_bfs_path: defaultdict) -> tuple:
     return max(temp_UCT_table_dict, key=temp_UCT_table_dict.get)
 
 
-def update_UTC_table() -> None:
+def update_UCT_table() -> None:
     """
     Update the UCT table for all nodes along the path based on the simulation result
     @return: None
