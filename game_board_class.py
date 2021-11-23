@@ -74,7 +74,7 @@ class GameBoard:
     def is_end_game(self):
         # print("self.box_coordinate_list = ", self.box_coordinate_list)
         # print("self.storage_coordinate_list = ", self.storage_coordinate_list)
-        return self.box_coordinate == self.storage_coordinate
+        return sorted(self.box_coordinate) == sorted(self.storage_coordinate)
 
     def is_box_reach_storage(self, box_coordinate_x, box_coordinate_y):
         return (box_coordinate_x, box_coordinate_y) in self.storage_coordinate_list
