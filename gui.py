@@ -1,8 +1,6 @@
 from tkinter import *
 import threading
-
-from base_implementation import update_corner_state_value_table
-
+from constant_configuration import *
 
 class Graph(threading.Thread):
     def __init__(self, board):
@@ -41,15 +39,15 @@ class Graph(threading.Thread):
         for storage in self.board.storage_coordinate:
             self.create_goal(storage)
 
-        self.create_bad(update_corner_state_value_table(self.board))
+        self.create_bad()
 
         self.player = self.create_player(self.board.get_current_player_coordinate())
 
         self.root.protocol("WM_DELETE_WINDOW", self.callback)
         self.root.mainloop()
 
-    def create_bad(self, bad):
-        for cood in bad:
+    def create_bad(self):
+        for cood in state_value_table:
             x = self.zoom * cood[1]
             y = self.zoom * cood[0]
             self.canvas.create_rectangle(x, y, x + self.boxsize, y + self.boxsize, fill="green", outline="#d3d3d3")
