@@ -25,6 +25,7 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
         all_bfs_path = bfs(my_game_board)  # get all paths
         if ((3, 4), 'L') in all_bfs_path:
             print("chance are here")
+        print("I am at: ", my_game_board.get_current_player_coordinate(), " all reachable = ", list(all_bfs_path.keys()))
         all_box_choices = list(all_bfs_path.keys())
         if not all_box_choices:
             simulation_choices_list.append((selected_box_coordinate, action, -20))
