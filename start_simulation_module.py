@@ -51,6 +51,8 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
                 reward = -5
         elif my_game_board.is_end_game():
             reward = 1000
+        elif simulation_choices_list.count((selected_box_coordinate, action)) > 2:
+            reward = simulation_choices_list.count((selected_box_coordinate, action)) * -5
         else:
             reward = -5
         simulation_choices_list.append((selected_box_coordinate, action, reward))

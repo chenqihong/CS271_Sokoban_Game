@@ -47,7 +47,7 @@ if __name__ == '__main__':
     board = read_input(input_str)
     update_corner_state_value_table(board)
     # update_between_state_value_table(board)
-    main(board)
+    # main(board)
 
     print("UTC_Table = ", dict(UCT_table))
     board = read_input(input_str)
