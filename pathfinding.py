@@ -100,6 +100,6 @@ def bfs(board: GameBoard):
             next = (path[-1][0],path[-1][1]-1)
         elif path[-2][1] - path[-1][1] == -1:
             next = (path[-1][0],path[-1][1]+1)
-        if not (board.is_this_wall(next[0], next[1]) or board.is_this_box(next[0], next[1]) or state_value_table[next]==-1):
+        if not (board.is_wall(next[0], next[1]) or board.is_box(next[0], next[1]) or next in state_value_table):
             results[(path[-1],get_direction(path[-2], path[-1]))] = path
     return results

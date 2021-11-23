@@ -12,7 +12,7 @@ import time
 
 
 ALL_LEGAL_MOVES = ['U', 'D', 'L', 'R']
-state_value_table = defaultdict(int)
+state_value_table = set()
 TotalTrainingTimes = 1200
 
 simulation_choices_list = []

@@ -41,7 +41,7 @@ class Graph(threading.Thread):
         for storage in self.board.storage_coordinate:
             self.create_goal(storage)
 
-        #self.create_bad(update_corner_state_value_table(self.board))
+        self.create_bad(update_corner_state_value_table(self.board))
 
         self.player = self.create_player(self.board.get_current_player_coordinate())
 

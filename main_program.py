@@ -48,10 +48,7 @@ if __name__ == '__main__':
     input_str = "sokoban01.txt"
     board = read_input(input_str)
     print("my_game board box = ", board.get_all_boxes_position())
-    update_corner_state_value_table(board)
-    # update_between_state_value_table(board)
-    from gui import Graph
-    gg = Graph(board)
+    update_state_value_table(board)
     main(board)
     #print("state value = ", state_value_table)
     #print("UCT_Table = ", dict(UCT_table))

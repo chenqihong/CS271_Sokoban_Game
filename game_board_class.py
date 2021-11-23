@@ -31,14 +31,14 @@ class GameBoard:
     def get_dimension(self):
         return self.height, self.weight
 
-    def is_this_wall(self, coordinate_x: int, coordinate_y: int) -> bool:
+    def is_wall(self, coordinate_x: int, coordinate_y: int) -> bool:
         return (coordinate_x, coordinate_y) in self.wall_coordinate
 
-    def is_this_box(self, coordinate_x: int, coordinate_y: int) -> bool:
+    def is_box(self, coordinate_x: int, coordinate_y: int) -> bool:
         return (coordinate_x, coordinate_y) in self.box_coordinate
 
-    def is_this_storage(self, coordinate: tuple) -> bool:
-        return coordinate in self.storage_coordinate
+    def is_storage(self, coordinate_x: int, coordinate_y: int) -> bool:
+        return (coordinate_x, coordinate_y) in self.storage_coordinate
 
     def get_current_player_coordinate(self) -> tuple:
         return self.player_coordinate
