@@ -13,7 +13,6 @@ from pathfinding import *
 from base_implementation_v2 import *
 from time import sleep
 
-
 def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     """
     This function starts the simulation
@@ -21,7 +20,10 @@ def start_simulation(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     @return: True if simulation success False otherwise
     """
     global total_number_boxes_done
+
     for current_step in range(TotalStepSize):
+
+
         all_bfs_path = bfs(my_game_board)  # get all paths
         if ((3, 4), 'L') in all_bfs_path:
             print("chance are here")

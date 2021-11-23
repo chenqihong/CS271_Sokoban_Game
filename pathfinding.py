@@ -43,7 +43,7 @@ def get_neighbors(board: GameBoard, position, goal):
     # ignore walls when getting neighbors because cannot move to wall
     # make sure found neighbor is inside the bounds of the game board
     for neighbor in possible_neighbors:
-        if neighbor not in board.wall_coordinate_list and neighbor not in box and \
+        if neighbor not in board.wall_coordinate and neighbor not in box and \
                 not is_out_of_bounds(board_size=board.get_dimension(), position=neighbor):
             valid_neighbors.append(neighbor)
 

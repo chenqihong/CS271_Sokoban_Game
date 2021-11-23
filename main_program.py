@@ -50,6 +50,8 @@ if __name__ == '__main__':
     print("my_game board box = ", board.get_all_boxes_position())
     update_corner_state_value_table(board)
     # update_between_state_value_table(board)
+    from gui import Graph
+    gg = Graph(board)
     main(board)
     #print("state value = ", state_value_table)
     #print("UCT_Table = ", dict(UCT_table))

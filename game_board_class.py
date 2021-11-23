@@ -11,7 +11,7 @@ class GameBoard:
 
 
         self.height, self.weight = board_dimension
-        self.wall_coordinate_list = wall_coordinate
+        self.wall_coordinate = wall_coordinate
         self.box_coordinate = box_coordinate
         self.storage_coordinate = storage_coordinate
         self.player_coordinate = player_coordinate
@@ -32,7 +32,7 @@ class GameBoard:
         return self.height, self.weight
 
     def is_this_wall(self, coordinate_x: int, coordinate_y: int) -> bool:
-        return (coordinate_x, coordinate_y) in self.wall_coordinate_list
+        return (coordinate_x, coordinate_y) in self.wall_coordinate
 
     def is_this_box(self, coordinate_x: int, coordinate_y: int) -> bool:
         return (coordinate_x, coordinate_y) in self.box_coordinate
