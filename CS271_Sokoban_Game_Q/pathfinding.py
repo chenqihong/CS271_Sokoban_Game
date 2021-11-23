@@ -71,6 +71,7 @@ def bfs(board: GameBoard):
     :return: all possible paths avoiding walls and other boxes
                 to box location
     """
+    global box_state_value_table
     final_paths = []
     for box in board.get_all_boxes_position():
         # Use Nodes to trace path
@@ -99,6 +100,6 @@ def bfs(board: GameBoard):
             next = (path[-1][0], path[-1][1]-1)
         elif path[-2][1] - path[-1][1] == -1:
             next = (path[-1][0], path[-1][1]+1)
-        if not (board.is_wall(next) or board.is_box(next) or next in box_state_value_table):
+        if not (board.is_wall(next) or board.is_box(next) or next in board.update_box_state_value_table()):
             results[(path[-1], get_direction(path[-2], path[-1]))] = path
     return results

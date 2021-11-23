@@ -23,7 +23,10 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     picked_box_action_list = []
     all_bfs_path = bfs(my_game_board)
     all_selections = list(all_bfs_path.keys())
+    from gui import Graph
+    g = Graph(my_game_board)
     for current_step in range(TotalStepSize):
+        g.update()
         box_position = list(tuple(my_game_board.get_all_boxes_position()))
         player_position = my_game_board.get_current_player_coordinate()
         current_state = str(player_position) + str(box_position)
@@ -38,7 +41,6 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
         next_to_board_coordinate_x, next_to_board_coordinate_y = all_bfs_path[(selected_box_coordinate, action)][-2]
         my_game_board.teleportation(next_to_board_coordinate_x, next_to_board_coordinate_y)
         my_game_board.update_current_player_coordinate(action)
-        update_box_state_value_table(my_game_board)
         next_state = str(my_game_board.get_current_player_coordinate()) + str(my_game_board.get_all_boxes_position())
 
         all_bfs_path = bfs(my_game_board)

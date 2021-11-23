@@ -25,6 +25,10 @@ class GameBoard:
 
         self.player_row_coordinate, self.player_column_coordinate = agent_coordinate
         self.player_row_coordinate_copy, self.player_column_coordinate_copy = agent_coordinate
+        self.state_value_table = set()
+        self.box_state_value_table = set()
+        self.update_state_value_table()
+        self.box_state_value_table = set()
 
     def get_dimension(self):
         return self.rows, self.columns
@@ -96,3 +100,30 @@ class GameBoard:
 
     def get_all_boxes_position(self):
         return self.box_coordinate_list
+
+    def update_state_value_table(self):
+        for row in range(1, self.rows + 1):
+            for col in range(1, self.columns + 1):
+                if not self.is_storage((row, col)) and (self.is_wall((row, col)) or (
+                        (self.is_wall((row + 1, col)) and self.is_wall((row, col + 1))) or (
+                        self.is_wall((row + 1, col)) and self.is_wall((row, col - 1))) or (
+                                self.is_wall((row - 1, col)) and self.is_wall((row, col + 1))) or (
+                                self.is_wall((row - 1, col)) and self.is_wall((row, col - 1))))):
+                    self.state_value_table.add((row, col))
+        for row in range(1, self.rows + 1):
+            for col in range(1, self.columns + 1):
+                if not self.is_storage((row, col)) and (
+                        ((row, col + 1) in self.state_value_table) + ((row, col - 1) in self.state_value_table) + (
+                        (row + 1, col) in self.state_value_table) + ((row - 1, col) in self.state_value_table)) > 2:
+                    self.state_value_table.add((row, col))
+
+    def update_box_state_value_table(self):
+        self.box_state_value_table = set()
+        temp_table = self.state_value_table | set(self.box_coordinate_list)
+        for row in range(1, self.rows + 1):
+            for col in range(1, self.columns + 1):
+                if not self.is_storage((row, col)) and (
+                        ((row, col + 1) in temp_table) + ((row, col - 1) in temp_table) +
+                        ((row + 1, col) in temp_table) + ((row - 1, col) in temp_table)) == 4:
+                    self.box_state_value_table.add((row, col))
+        return self.box_state_value_table

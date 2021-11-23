@@ -12,7 +12,7 @@ from game_board_class import *
 from pathfinding import *
 from training_module import training
 from evaluate_module import evaluate
-
+from constant_configuration import *
 
 def main(my_game_board: GameBoard):
     global picked_box_action_list
@@ -29,7 +29,6 @@ def main(my_game_board: GameBoard):
 if __name__ == '__main__':
     input_str = "sokoban02.txt"
     board = read_input(input_str)
-    update_state_value_table(board)
     main(board)
 
     board.reset_board()

@@ -17,7 +17,7 @@ def convert_to_coordinate_list(line_list: list) -> list:
     """
     coordinate_list = list()
     for i in range(0, len(line_list), 2):
-        coordinate_list.append((line_list[i], line_list[i+1]))
+        coordinate_list.append((line_list[i], line_list[i + 1]))
     return coordinate_list
 
 
@@ -77,27 +77,4 @@ def read_input(input_file_dir: str) -> GameBoard:
     return my_game_board
 
 
-def update_state_value_table(board: GameBoard):
-    total_rows, total_columns = board.get_dimension()
-    for row in range(1, total_rows + 1):
-        for col in range(1, total_columns + 1):
-            if not board.is_storage((row, col)) and (board.is_wall((row, col)) or ((board.is_wall((row+1, col)) and board.is_wall((row, col+1))) or (board.is_wall((row+1, col)) and board.is_wall((row, col-1))) or (board.is_wall((row-1, col)) and board.is_wall((row, col+1))) or (board.is_wall((row-1, col)) and board.is_wall((row, col-1))))):
-                state_value_table.add((row, col))
-    for row in range(1, total_rows + 1):
-        for col in range(1, total_columns + 1):
-            if not board.is_storage((row, col)) and (((row, col+1) in state_value_table) + ((row, col-1) in state_value_table)+((row+1, col) in state_value_table)+((row-1, col) in state_value_table)) > 2:
-                state_value_table.add((row, col))
-    return state_value_table
 
-
-def update_box_state_value_table(board: GameBoard):
-    global box_state_value_table
-    total_rows, total_columns = board.get_dimension()
-    box_state_value_table = state_value_table.copy()
-    box_state_value_table.update(board.get_all_boxes_position())
-    for row in range(1, total_rows + 1):
-        for col in range(1, total_columns + 1):
-            if not board.is_storage((row, col)) and (
-                    ((row, col + 1) in box_state_value_table) + ((row, col - 1) in box_state_value_table) +
-                    ((row + 1, col) in box_state_value_table) + ((row - 1, col) in box_state_value_table)) == 4:
-                box_state_value_table.add((row, col))
