@@ -37,7 +37,7 @@ def get_neighbors(board: GameBoard, position, goal):
                           (position[0], position[1] + 1), (position[0], position[1] - 1)]
     valid_neighbors = []
 
-    box = board.box_coordinate_list.copy()
+    box = board.box_coordinate.copy()
     box.remove(goal)
 
     # ignore walls when getting neighbors because cannot move to wall

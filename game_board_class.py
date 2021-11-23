@@ -5,40 +5,28 @@ game_board_class.py: The GameBoard class file of the project sokoban for CS271
 __author__ = "Qi Hong Chen"
 __copyright__ = "Copyright 2021, The game of Sokoban game project"
 
-
-# TODO: Handle two boxes get stucked situation.
 class GameBoard:
-    def __init__(self, board_dimension: tuple, num_wall: int, wall_coordinate: list, num_box: int, box_coordinate: list,
-                 num_storage: int, storage_coordinate: list, agent_coordinate: tuple) -> None:
+    def __init__(self, board_dimension: tuple, wall_coordinate: set, box_coordinate: set, storage_coordinate: set, player_coordinate: tuple) -> None:
+
+
 
         self.height, self.weight = board_dimension
-        self.number_walls = num_wall
         self.wall_coordinate_list = wall_coordinate
-        self.wall_coordinate_list_copy = tuple(wall_coordinate)
-        self.number_boxes = num_box
-
-        self.box_coordinate_list = box_coordinate
-        self.box_coordinate_list_copy = tuple(box_coordinate)
-        self.number_storages = num_storage
-        self.storage_coordinate_list = storage_coordinate
-        self.storage_coordinate_list_copy = tuple(storage_coordinate)
-        self.player_x_coordinate, self.player_y_coordinate = agent_coordinate
-        self.player_x_coordinate_copy, self.player_y_coordinate_copy = agent_coordinate
+        self.box_coordinate = box_coordinate
+        self.storage_coordinate = storage_coordinate
+        self.player_coordinate = player_coordinate
         self.recent_changed_box_coordinate = None
-        self.board = [[" " for _ in range(self.weight)] for _ in range(self.height)]
-        self.board[self.player_x_coordinate - 1][self.player_x_coordinate - 1] = "@"
-        for i in range(len(self.wall_coordinate_list)):
-            self.board[self.wall_coordinate_list[i][0] - 1][self.wall_coordinate_list[i][1] - 1] = "#"
-        for n in range(len(self.box_coordinate_list)):
-            self.board[self.box_coordinate_list[n][0] - 1][self.box_coordinate_list[n][1] - 1] = "$"
-        for r in range(len(self.storage_coordinate_list)):
-            self.board[self.storage_coordinate_list[r][0] - 1][self.storage_coordinate_list[r][1] - 1] = "+"
+
+        self.wall_coordinate_copy = wall_coordinate.copy()
+        self.box_coordinate_copy = box_coordinate.copy()
+        self.storage_coordinate_copy = storage_coordinate.copy()
+        self.player_coordinate_copy = player_coordinate
 
     def reset_board(self):
-        self.box_coordinate_list = list(self.box_coordinate_list_copy)
-        self.wall_coordinate_list = list(self.wall_coordinate_list_copy)
-        self.storage_coordinate_list = list(self.storage_coordinate_list_copy)
-        self.player_x_coordinate, self.player_y_coordinate = self.player_x_coordinate_copy, self.player_y_coordinate_copy
+        self.box_coordinate = self.box_coordinate_copy.copy()
+        self.wall_coordinate = self.wall_coordinate_copy.copy()
+        self.storage_coordinate = self.storage_coordinate_copy.copy()
+        self.player_coordinate = self.player_coordinate_copy
 
     def get_dimension(self):
         return self.height, self.weight
@@ -47,13 +35,13 @@ class GameBoard:
         return (coordinate_x, coordinate_y) in self.wall_coordinate_list
 
     def is_this_box(self, coordinate_x: int, coordinate_y: int) -> bool:
-        return (coordinate_x, coordinate_y) in self.box_coordinate_list
+        return (coordinate_x, coordinate_y) in self.box_coordinate
 
-    def is_this_storage(self, coordinate_x: int, coordinate_y: int) -> bool:
-        return (coordinate_x, coordinate_y) in self.storage_coordinate_list
+    def is_this_storage(self, coordinate: tuple) -> bool:
+        return coordinate in self.storage_coordinate
 
     def get_current_player_coordinate(self) -> tuple:
-        return self.player_x_coordinate, self.player_y_coordinate
+        return self.player_coordinate
 
     def update_current_player_coordinate(self, move: str) -> None:
         if move == 'U':
@@ -64,7 +52,7 @@ class GameBoard:
             self.player_y_coordinate -= 1
         elif move == 'R':
             self.player_y_coordinate += 1
-        if (self.player_x_coordinate, self.player_y_coordinate) in self.box_coordinate_list:
+        if (self.player_x_coordinate, self.player_y_coordinate) in self.box_coordinate:
             self.update_box_coordinate(move, self.player_x_coordinate, self.player_y_coordinate)
 
     def update_box_coordinate(self, box_move_dir: str, box_current_coordinate_x: int,
@@ -80,13 +68,13 @@ class GameBoard:
             box_current_coordinate_y += 1
         new_box_coordinate = (box_current_coordinate_x, box_current_coordinate_y)
         self.recent_changed_box_coordinate = new_box_coordinate
-        self.box_coordinate_list.remove(old_box_coordinate)
-        self.box_coordinate_list.append(new_box_coordinate)
+        self.box_coordinate.remove(old_box_coordinate)
+        self.box_coordinate.add(new_box_coordinate)
 
     def is_end_game(self):
         # print("self.box_coordinate_list = ", self.box_coordinate_list)
         # print("self.storage_coordinate_list = ", self.storage_coordinate_list)
-        return self.box_coordinate_list == self.storage_coordinate_list
+        return self.box_coordinate == self.storage_coordinate
 
     def is_box_reach_storage(self, box_coordinate_x, box_coordinate_y):
         return (box_coordinate_x, box_coordinate_y) in self.storage_coordinate_list
@@ -165,7 +153,7 @@ class GameBoard:
         return list(possible_moves_set)
 
     def get_all_boxes_position(self):
-        return self.box_coordinate_list
+        return self.box_coordinate
 
     def get_recent_changed_box_coordinate(self):
         return self.recent_changed_box_coordinate
@@ -182,21 +170,11 @@ class GameBoard:
         self.player_y_coordinate = y_coordinate
 
     def is_any_box_reach_end(self):
-        return any(x in self.storage_coordinate_list for x in self.box_coordinate_list)
+        return any(x in self.storage_coordinate for x in self.box_coordinate)
 
     def get_number_box_done(self):
         count = 0
-        for box_coordinate in self.box_coordinate_list:
-            if box_coordinate in self.storage_coordinate_list:
+        for box_coordinate in self.box_coordinate:
+            if box_coordinate in self.storage_coordinate:
                 count += 1
         return count
-
-    def update_board(self):
-        self.board = [[" " for _ in range(self.weight)] for _ in range(self.height)]
-        self.board[self.player_x_coordinate - 1][self.player_x_coordinate - 1] = "@"
-        for i in range(len(self.wall_coordinate_list)):
-            self.board[self.wall_coordinate_list[i][0] - 1][self.wall_coordinate_list[i][1] - 1] = "#"
-        for n in range(len(self.box_coordinate_list)):
-            self.board[self.box_coordinate_list[n][0] - 1][self.box_coordinate_list[n][1] - 1] = "$"
-        for r in range(len(self.storage_coordinate_list)):
-            self.board[self.storage_coordinate_list[r][0] - 1][self.storage_coordinate_list[r][1] - 1] = "+"

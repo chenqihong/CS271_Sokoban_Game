@@ -1,7 +1,5 @@
 from tkinter import *
 import threading
-from base_implementation import *
-
 
 class graph(threading.Thread):
     def __init__(self, board):
