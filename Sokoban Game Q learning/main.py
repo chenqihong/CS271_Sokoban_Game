@@ -15,6 +15,7 @@ def train(board):
 if __name__ == '__main__':
     board = read_input("sokoban02.txt")
     all_selections = list(board.BFS().keys())
+    print(simulate(board, all_selections[0], 5))
     print(simulate(board, all_selections[1], 5))
     #train(board)
     #print("Success" if evaluate(board) else "Fail")
