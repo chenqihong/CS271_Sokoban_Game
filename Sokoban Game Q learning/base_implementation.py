@@ -1,36 +1,19 @@
 from constant_configuration import *
 from game_board_class import *
 from random import random
+from copy import deepcopy
 
-
-def read_input(input_file_dir: str) -> GameBoard:
-    """
-    Read the input from the input file dir
-    @param input_file_dir: the dir of the input file
-    @return: GameBoard object
-    """
-    with open(input_file_dir, 'r') as f:
-        board_dimension = tuple([int(x) for x in f.readline().split(" ")])
-        walls = f.readline().split()
-        boxes = f.readline().split()
-        storages = f.readline().split()
-        wall_coordinate = set()
-        boxes_coordinate = set()
-        storage_coordinate = set()
-        for i in range(1, int(walls[0]) * 2, 2):
-            wall_coordinate.add((int(walls[i]), int(walls[i + 1])))
-
-        for i in range(1, int(boxes[0]) * 2, 2):
-            boxes_coordinate.add((int(boxes[i]), int(boxes[i + 1])))
-
-        for i in range(1, int(storages[0]) * 2, 2):
-            storage_coordinate.add((int(storages[i]), int(storages[i + 1])))
-
-        player_coordinate = tuple([int(x) for x in f.readline().split(" ")])
-
-    board = GameBoard(board_dimension, frozenset(wall_coordinate), boxes_coordinate, frozenset(storage_coordinate),
-                      player_coordinate)
-    return board
+def read_input(file):
+    with open(file, 'r') as f:
+        dimension = tuple([int(x) for x in f.readline().split(" ")])
+        wall_str = f.readline().split()
+        box_str = f.readline().split()
+        storage_str = f.readline().split()
+        walls = set([(int(wall_str[i]), int(wall_str[i + 1])) for i in range(1, int(wall_str[0]) * 2, 2)])
+        boxes = set((int(box_str[i]), int(box_str[i + 1])) for i in range(1, int(box_str[0]) * 2, 2))
+        storages = set((int(storage_str[i]), int(storage_str[i + 1])) for i in range(1, int(storage_str[0]) * 2, 2))
+        player = tuple([int(x) for x in f.readline().split(" ")])
+    return GameBoard(dimension, frozenset(walls), boxes, frozenset(storages), player)
 
 
 def decide_policy(BaseEpsilon: float, current_state) -> int:
@@ -48,7 +31,7 @@ def decide_policy(BaseEpsilon: float, current_state) -> int:
     return 1
 
 
-def get_greedy_choice(current_state: str, all_reachable_boxes: list) -> tuple:
+def greedy_choice(current_state: str, all_reachable_boxes: list) -> tuple:
     """
     This function finds the greedy choice of the box
     @param current_state:
@@ -56,19 +39,17 @@ def get_greedy_choice(current_state: str, all_reachable_boxes: list) -> tuple:
     @return: ((x,y), U)
     """
     temp_dict = defaultdict(float)
+
     for reachable_box, action in all_reachable_boxes:
         if (reachable_box, action) in Q_table[current_state]:
             temp_dict[(reachable_box, action)] = Q_table[current_state][(reachable_box, action)]
     return max(temp_dict, key=temp_dict.get)
 
 
-def update_Q_Value(current_state, selected_box_coordinate, action, reward, next_state):
-    Q_predict = Q_table[current_state][(selected_box_coordinate, action)]
-    if next_state in Q_table:
-        Q_target = reward + gamma * (max(Q_table[next_state].values()))
-    else:
-        Q_target = reward
-    Q_table[current_state][(selected_box_coordinate, action)] += learningRate * (Q_target - Q_predict)
+def update_Q_Value(current_state, selected_box, action, reward, next_state):
+    Q_predict = Q_table[current_state][(selected_box, action)]
+    Q_target = reward + gamma * (max(Q_table[next_state].values())) if next_state in Q_table else reward
+    Q_table[current_state][(selected_box, action)] += learningRate * (Q_target - Q_predict)
 
 
 def calculate_reward(my_game_board: GameBoard, picked_box_action_list, selected_box_coordinate, action, all_selections,
@@ -92,3 +73,15 @@ def calculate_reward(my_game_board: GameBoard, picked_box_action_list, selected_
     else:
         reward = -5
     return reward, total_number_boxes_done
+
+def simulate(board,action,step):
+    if not action or not step:
+        return 1
+    board = deepcopy(board)
+    board.move_player(*action[0])
+    board.update_player(action[1])
+    result = 0
+    bfs = list(board.BFS().keys())
+    for action in bfs:
+        result += simulate(board, action, step-1)
+    return result

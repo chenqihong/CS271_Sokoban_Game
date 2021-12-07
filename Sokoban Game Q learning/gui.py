@@ -29,29 +29,19 @@ class Graph(threading.Thread):
         l.pack()
         self.create_bad()
 
-        for box in self.board.box_coordinate_list:
+        for box in self.board.boxes:
             self.boxes.append(self.create_box(box))
 
-        for wall in self.board.wall_coordinate_list:
+        for wall in self.board.walls:
             self.create_wall(wall)
 
-        for storage in self.board.storage_coordinate_list:
+        for storage in self.board.storages:
             self.create_goal(storage)
 
-        self.player = self.create_player(self.board.get_current_player_coordinate())
+        self.player = self.create_player(self.board.get_player())
 
         self.root.protocol("WM_DELETE_WINDOW", self.callback)
         self.root.mainloop()
-
-    def box_bad(self):
-        for blue in self.blues:
-            self.canvas.delete(blue)
-        for cood in self.board.box_state_value_table:
-            if cood not in self.board.state_value_table:
-                x = self.zoom * cood[1]
-                y = self.zoom * cood[0]
-                self.blues.append(self.canvas.create_rectangle(x, y, x + self.boxsize, y + self.boxsize, fill="blue",
-                                                               outline="#d3d3d3"))
 
     def create_bad(self):
         for cood in self.board.state_value_table:
@@ -83,18 +73,12 @@ class Graph(threading.Thread):
 
     def update(self):
         sleep(1)
-        x = self.zoom * self.board.get_current_player_coordinate()[1]
-        y = self.zoom * self.board.get_current_player_coordinate()[0]
+        x = self.zoom * self.board.player_col
+        y = self.zoom * self.board.player_row
 
         self.canvas.coords(self.player, x + 10, y + 10, x + self.playersize + 10, y + self.playersize + 10)
 
-        for i in range(len(self.board.box_coordinate_list)):
-            x = self.zoom * self.board.box_coordinate_list[i][1]
-            y = self.zoom * self.board.box_coordinate_list[i][0]
+        for i in range(len(self.board.boxes)):
+            x = self.zoom * self.board.boxes[i][1]
+            y = self.zoom * self.board.boxes[i][0]
             self.canvas.coords(self.boxes[i], x, y, x + self.boxsize, y + self.boxsize)
-        self.box_bad()
-
-
-board = read_input("sokoban01.txt")
-g = Graph(board)
-g.update()

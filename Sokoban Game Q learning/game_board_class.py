@@ -28,6 +28,7 @@ class GameBoard:
             self.update_box(move)
 
     def update_box(self, box_move_dir: str) -> None:
+        print("gg")
         box_x, box_y = self.get_player()
         if box_move_dir == 'U':
             box_x -= 1
@@ -41,22 +42,13 @@ class GameBoard:
         self.boxes.append((box_x, box_y))
 
     def is_end_game(self):
-        return sorted(self.boxes) == sorted(self.storages)
-
-    def is_box_reach_storage(self, box_coordinate_x, box_coordinate_y):
-        return (box_coordinate_x, box_coordinate_y) in self.storages
-
-
+        return set(self.boxes) == self.storages
 
     def is_any_box_reach_end(self):
-        return any(x in self.storages for x in self.boxes)
+        return not self.storages.isdisjoint(self.boxes)
 
     def get_number_box_done(self):
-        count = 0
-        for box_coordinate in self.boxes:
-            if box_coordinate in self.storages:
-                count += 1
-        return count
+        return len(self.storages.intersection(self.boxes))
 
     def make_state_value_table(self):
         state_value_table = set()
@@ -75,3 +67,44 @@ class GameBoard:
                         (row + 1, col) in state_value_table) + ((row - 1, col) in state_value_table)) > 2:
                     state_value_table.add((row, col))
         return state_value_table
+
+    def BFS(self):
+        """
+        Returns all possible paths to location from player position
+        :param board: Current game board state
+        :return: all possible paths avoiding walls and other boxes
+                    to box location
+        """
+        final_paths = []
+        for box in self.boxes:
+            queue = [[self.get_player()]]
+            while queue:
+                path = queue.pop()
+                pos = path[-1]
+                if pos == box:
+                    final_paths.append(path)
+                    continue
+                goal = self.boxes.copy()
+                goal.remove(box)
+                for neighbor in [(pos[0] + 1, pos[1]), (pos[0] - 1, pos[1]), (pos[0], pos[1] + 1), (pos[0], pos[1] - 1)]:
+                    if not (neighbor[0] > self.rows or neighbor[1] > self.columns) and neighbor not in self.walls and neighbor not in goal and neighbor not in path:
+                        new_path = list(path)
+                        new_path.append(neighbor)
+                        queue.append(new_path)
+        results = dict()
+        for path in final_paths:
+            next = (path[-1][0], path[-1][1] + 1)
+            if path[-2][0] - path[-1][0] == 1:
+                next = (path[-1][0] - 1, path[-1][1])
+            elif path[-2][0] - path[-1][0] == -1:
+                next = (path[-1][0] + 1, path[-1][1])
+            elif path[-2][1] - path[-1][1] == 1:
+                next = (path[-1][0], path[-1][1] - 1)
+
+            if not (next in self.walls or next in self.boxes or next in self.state_value_table):
+                direction = 'R'
+                if path[-2][0] - path[-1][0] == 1: direction = 'U'
+                elif path[-2][0] - path[-1][0] == -1: direction = 'D'
+                elif path[-2][1] - path[-1][1] == 1: direction = 'L'
+                results[(path[-1], direction)] = path
+        return results
