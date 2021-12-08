@@ -13,7 +13,7 @@ def train(board):
 
 
 if __name__ == '__main__':
-    board = read_input("sokoban02.txt")
+    board = read_input("benchmarks\sokoban90.txt")
     all_selections = list(board.BFS().keys())
     print("all selections = ", all_selections)
     # print(simulate(board, all_selections[0], 1))
