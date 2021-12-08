@@ -3,6 +3,7 @@ from game_board_class import *
 from random import random
 from copy import deepcopy
 
+
 def read_input(file):
     with open(file, 'r') as f:
         dimension = tuple([int(x) for x in f.readline().split(" ")])
@@ -74,14 +75,18 @@ def calculate_reward(my_game_board: GameBoard, picked_box_action_list, selected_
         reward = -5
     return reward, total_number_boxes_done
 
-def simulate(board,action,step):
+
+def simulate(board, action,step):
+    path = board.BFS()[action]
+    # print("passing action = ", action)
     if not action or not step:
         return 1
     board = deepcopy(board)
-    board.move_player(*action[0])
+    board.move_player(*path[-2])
     board.update_player(action[1])
     result = 0
     bfs = list(board.BFS().keys())
+    # print("bfs = ", bfs)
     for action in bfs:
         result += simulate(board, action, step-1)
     return result

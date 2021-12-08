@@ -28,7 +28,7 @@ class GameBoard:
             self.update_box(move)
 
     def update_box(self, box_move_dir: str) -> None:
-        print("gg")
+        # print("gg")
         box_x, box_y = self.get_player()
         if box_move_dir == 'U':
             box_x -= 1

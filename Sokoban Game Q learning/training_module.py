@@ -20,7 +20,20 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
         box_position = list(tuple(my_game_board.boxes))
         current_state = str(my_game_board.get_player()) + str(box_position)
         if not all_selections: return
-        selected_box, action = greedy_choice(current_state, all_selections) if decide_policy(BaseEpsilon, current_state) else choice(all_selections)
+
+        if decide_policy(BaseEpsilon, current_state):
+            selected_box, action = greedy_choice(current_state, all_selections)
+        else:
+            max = 0
+            result = []
+            for selection in all_selections:
+                score = simulate(my_game_board, selection, 3)
+                if score > max:
+                    result = [selection]
+                    max = score
+                elif score == max:
+                    result.append(selection)
+            selected_box, action = choice(result)
         my_game_board.move_player(*all_bfs_path[(selected_box, action)][-2])
         my_game_board.update_player(action)
         next_state = str(my_game_board.get_player()) + str(my_game_board.boxes)

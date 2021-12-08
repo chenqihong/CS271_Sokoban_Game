@@ -15,7 +15,20 @@ def train(board):
 if __name__ == '__main__':
     board = read_input("sokoban02.txt")
     all_selections = list(board.BFS().keys())
-    print(simulate(board, all_selections[0], 5))
-    print(simulate(board, all_selections[1], 5))
-    #train(board)
-    #print("Success" if evaluate(board) else "Fail")
+    print("all selections = ", all_selections)
+    # print(simulate(board, all_selections[0], 1))
+    # print(simulate(board, all_selections[1], 1))
+    # max = 0
+    # result = []
+    # for selection in all_selections:
+    #     score = simulate(board, (selection, board.BFS()[selection]), 1)
+    #     if score > max:
+    #         result = [selection]
+    #         max = score
+    #     elif score == max:
+    #         result.append(selection)
+    # print("result = ", result)
+
+
+    train(board)
+    print("Success" if evaluate(board) else "Fail")
