@@ -91,3 +91,52 @@ def simulate(board, action,step):
     for action in bfs:
         result += simulate(board, action, step-1)
     return result
+
+
+def calculate_box_new_coordinate(selected_box_coordinate, action):
+    selected_box_row, selected_box_column = selected_box_coordinate
+    if action == "U":
+        new_box_coordinate = selected_box_row-1, selected_box_column
+    if action == 'D':
+        new_box_coordinate = selected_box_row + 1, selected_box_column
+    if action == 'L':
+        new_box_coordinate = selected_box_row, selected_box_column - 1
+    if action == 'R':
+        new_box_coordinate = selected_box_row, selected_box_column + 1
+    else:
+        new_box_coordinate = (-1, -1)
+    return new_box_coordinate
+
+
+def is_stuck(player_new_coordinate, box_new_coordinate, my_game_board, action):
+    face_new_coordinate = (-1, -1)
+    if action == 'U':
+        face_new_coordinate = box_new_coordinate[0] - 1, box_new_coordinate[1]
+    elif action == 'D':
+        face_new_coordinate = box_new_coordinate[0] + 1, box_new_coordinate[1]
+    elif action == 'L':
+        face_new_coordinate = box_new_coordinate, box_new_coordinate[1] - 1
+    elif action == 'R':
+        face_new_coordinate = box_new_coordinate, box_new_coordinate[1] + 1
+    if face_new_coordinate not in my_game_board.storages:
+        return False
+
+    correspond_coordinate_1, correspond_coordinate_2 = (-1, -1)
+    if action == 'U' or action == 'D':
+        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate, box_new_coordinate[1] - 1), (box_new_coordinate, box_new_coordinate[1] + 1)
+    elif action == 'L' or action == 'R':
+        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate[0] - 1, box_new_coordinate[1]), (box_new_coordinate[0] + 1, box_new_coordinate[1])
+    if correspond_coordinate_1 in my_game_board.storages and correspond_coordinate_2 in my_game_board.storages:
+        return True
+
+
+def filter_out_box_together_selections(all_selections: list, my_game_board: GameBoard):
+    if len(all_selections) <= 1:
+        return all_selections
+    new_all_selections = list()
+    for selected_box_coordinate, action in all_selections:
+        box_new_coordinate = calculate_box_new_coordinate(selected_box_coordinate, action)
+        if is_stuck(selected_box_coordinate, box_new_coordinate, my_game_board, action):
+            continue
+        new_all_selections.append((selected_box_coordinate, action))
+    return new_all_selections

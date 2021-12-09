@@ -14,6 +14,5 @@ def train(board):
 
 if __name__ == '__main__':
     board = read_input("benchmarks/sokoban01.txt")
-    board = read_input("sokoban01.txt")
     train(board)
     print("Success" if evaluate(board) else "Fail")

@@ -18,27 +18,31 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     # g = Graph(my_game_board)
     for i in range(TotalStepSize):
         # g.update()
+        all_selections = filter_out_box_together_selections(all_selections, my_game_board)
         box_position = list(tuple(my_game_board.boxes))
         current_state = str(my_game_board.get_player()) + str(box_position)
         if not all_selections: return
-        if decide_policy(BaseEpsilon, current_state):
-            selected_box, action = greedy_choice(current_state, all_selections)
-        else:
-            max_val = 0
-            result_max = []
-            result_all = []
-            for selection in all_selections:
-                score = simulate(my_game_board, selection, step_size)
-                if score > max_val:
-                    result_max = [selection]
-                    max_val = score
-                elif score == max_val:
-                    result_max.append(selection)
-                result_all.append(selection)
-            if random() > 0.2:
-                selected_box, action = choice(result_max)
+        if len(all_selections) > 1:
+            if decide_policy(BaseEpsilon, current_state):
+                selected_box, action = greedy_choice(current_state, all_selections)
             else:
-                selected_box, action = choice(result_all)
+                max_val = 0
+                result_max = []
+                result_all = []
+                for selection in all_selections:
+                    score = simulate(my_game_board, selection, step_size)
+                    if score > max_val:
+                        result_max = [selection]
+                        max_val = score
+                    elif score == max_val:
+                        result_max.append(selection)
+                    result_all.append(selection)
+                if random() > 0.2:
+                    selected_box, action = choice(result_max)
+                else:
+                    selected_box, action = choice(result_all)
+        else:
+            selected_box, action = all_selections[0]
         my_game_board.move_player(*all_bfs_path[(selected_box, action)][-2])
         my_game_board.update_player(action)
         next_state = str(my_game_board.get_player()) + str(my_game_board.boxes)
