@@ -73,6 +73,7 @@ def calculate_reward(my_game_board: GameBoard, picked_box_action_list, selected_
         reward = picked_box_action_list.count((selected_box_coordinate, action)) * (-5)
     else:
         reward = -5
+
     return reward, total_number_boxes_done
 
 
