@@ -1,5 +1,5 @@
 from base_implementation import *
-from random import choice
+from random import choice, random
 
 
 def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
@@ -13,10 +13,10 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     picked_box_action_list = []
     all_bfs_path = my_game_board.BFS()
     all_selections = list(all_bfs_path.keys())
-    # from gui import Graph
-    # g = Graph(my_game_board)
+    #from gui import Graph
+    #g = Graph(my_game_board)
     for i in range(TotalStepSize):
-        # g.update()
+        #g.update()
         box_position = list(tuple(my_game_board.boxes))
         current_state = str(my_game_board.get_player()) + str(box_position)
         if not all_selections: return
@@ -24,16 +24,19 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
         if decide_policy(BaseEpsilon, current_state):
             selected_box, action = greedy_choice(current_state, all_selections)
         else:
-            max = 0
-            result = []
-            for selection in all_selections:
-                score = simulate(my_game_board, selection, 3)
-                if score > max:
-                    result = [selection]
-                    max = score
-                elif score == max:
-                    result.append(selection)
-            selected_box, action = choice(result)
+            if random() < 0.3:
+                selected_box, action = choice(all_selections)
+            else:
+                max = 0
+                result = []
+                for selection in all_selections:
+                    score = simulate(my_game_board, selection, 3)
+                    if score > max:
+                        result = [selection]
+                        max = score
+                    elif score == max:
+                        result.append(selection)
+                selected_box, action = choice(result)
         my_game_board.move_player(*all_bfs_path[(selected_box, action)][-2])
         my_game_board.update_player(action)
         next_state = str(my_game_board.get_player()) + str(my_game_board.boxes)

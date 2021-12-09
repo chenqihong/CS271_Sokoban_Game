@@ -12,8 +12,8 @@ class Graph(threading.Thread):
         self.zoom = 50
         self.playersize = 30
         self.boxsize = 50
-        self.width = 10 * self.zoom
-        self.height = 10 * self.zoom
+        self.width = 25 * self.zoom
+        self.height = 18 * self.zoom
         self.board = board
         self.start()
 
@@ -29,14 +29,16 @@ class Graph(threading.Thread):
         l.pack()
         self.create_bad()
 
+        for storage in self.board.storages:
+            self.create_goal(storage)
+
         for box in self.board.boxes:
             self.boxes.append(self.create_box(box))
 
         for wall in self.board.walls:
             self.create_wall(wall)
 
-        for storage in self.board.storages:
-            self.create_goal(storage)
+
 
         self.player = self.create_player(self.board.get_player())
 
