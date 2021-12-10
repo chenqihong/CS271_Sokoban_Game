@@ -2,7 +2,7 @@ from base_implementation import *
 from random import choice, random
 
 
-def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
+def training(board, BaseEpsilon: float) -> None:
     """
     This function performances the training
     :param my_game_board:
@@ -12,16 +12,17 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
     total_number_boxes_done = 0
     picked_box_action_list = []
     repeated_action_list = []
-    all_bfs_path = my_game_board.BFS()
+    all_bfs_path = board.BFS()
     all_selections = list(all_bfs_path.keys())
     # from gui import Graph
     # g = Graph(my_game_board)
     for i in range(TotalStepSize):
         # g.update()
-        all_selections = filter_out_box_together_selections(all_selections, my_game_board)
-        box_position = list(tuple(my_game_board.boxes))
-        current_state = str(my_game_board.get_player()) + str(box_position)
-        if not all_selections: return
+        all_selections = filter_out_box_together_selections(all_selections, board)
+        current_state = board.get_state()
+
+        if not all_selections:
+            return
         if len(all_selections) > 1:
             if decide_policy(BaseEpsilon, current_state):
                 selected_box, action = greedy_choice(current_state, all_selections)
@@ -30,7 +31,7 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
                 result_max = []
                 result_all = []
                 for selection in all_selections:
-                    score = simulate(my_game_board, selection, step_size)
+                    score = simulate(board, selection, step_size)
                     if score > max_val:
                         result_max = [selection]
                         max_val = score
@@ -43,21 +44,21 @@ def training(my_game_board: GameBoard, BaseEpsilon: float) -> None:
                     selected_box, action = choice(result_all)
         else:
             selected_box, action = all_selections[0]
-        my_game_board.move_player(*all_bfs_path[(selected_box, action)][-2])
-        my_game_board.update_player(action)
-        next_state = str(my_game_board.get_player()) + str(my_game_board.boxes)
+        board.move_player(*all_bfs_path[(selected_box, action)][-2])
+        board.update_player(action)
+        next_state = board.get_state()
 
-        all_bfs_path = my_game_board.BFS()
+        all_bfs_path = board.BFS()
         all_selections = list(all_bfs_path.keys())
-        reward, total_number_boxes_done = calculate_reward(my_game_board, picked_box_action_list,
+        reward, total_number_boxes_done = calculate_reward(board, picked_box_action_list,
                                                            selected_box, action, all_selections,
                                                            total_number_boxes_done)
         picked_box_action_list.append((selected_box, action))
         if len(repeated_action_list) == 2:
             first_box, second_box = repeated_action_list
-            if first_box in my_game_board.storages and second_box not in my_game_board.storages and selected_box == first_box:
+            if first_box in board.storages and second_box not in board.storages and selected_box == first_box:
                 reward = -300
-            if first_box not in my_game_board.storages and second_box in my_game_board.storages and selected_box == first_box:
+            if first_box not in board.storages and second_box in board.storages and selected_box == first_box:
                 reward = -300
             repeated_action_list = list()
         else:

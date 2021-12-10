@@ -5,15 +5,16 @@ from base_implementation import *
 
 
 class Graph(threading.Thread):
-    def __init__(self, board):
+    def __init__(self, board, bad=False):
         threading.Thread.__init__(self)
+        self.bad = bad
         self.boxes = []
         self.blues = []
         self.zoom = 50
         self.playersize = 30
         self.boxsize = 50
-        self.width = 25 * self.zoom
-        self.height = 18 * self.zoom
+        self.width = 11 * self.zoom
+        self.height = 11 * self.zoom
         self.board = board
         self.start()
 
@@ -27,7 +28,7 @@ class Graph(threading.Thread):
         self.canvas.pack()
         l = Label(self.root, text="    1   2   3   4   5   6   7   8   9", font=("Courier", 16, "bold"))
         l.pack()
-        self.create_bad()
+        if self.bad: self.create_bad()
 
         for storage in self.board.storages:
             self.create_goal(storage)
@@ -37,8 +38,6 @@ class Graph(threading.Thread):
 
         for wall in self.board.walls:
             self.create_wall(wall)
-
-
 
         self.player = self.create_player(self.board.get_player())
 
@@ -84,3 +83,7 @@ class Graph(threading.Thread):
             x = self.zoom * self.board.boxes[i][1]
             y = self.zoom * self.board.boxes[i][0]
             self.canvas.coords(self.boxes[i], x, y, x + self.boxsize, y + self.boxsize)
+
+
+if __name__ == '__main__':
+    g = Graph(read_input("sokoban02.txt"))

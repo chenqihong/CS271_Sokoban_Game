@@ -4,10 +4,13 @@ class GameBoard:
 
         self.rows, self.columns = board_dimension
         self.walls = wall_coordinate
-        self.boxes = list(box_coordinate)
+        self.boxes = box_coordinate
         self.storages = storage_coordinate
         self.player_row, self.player_col = player_coordinate
         self.state_value_table = self.make_state_value_table()
+
+    def get_state(self):
+        return self.get_player(), frozenset(self.boxes)
 
     def get_player(self) -> tuple:
         return self.player_row, self.player_col
@@ -39,7 +42,7 @@ class GameBoard:
         elif box_move_dir == 'R':
             box_y += 1
         self.boxes.remove(self.get_player())
-        self.boxes.append((box_x, box_y))
+        self.boxes.add((box_x, box_y))
 
     def is_end_game(self):
         return set(self.boxes) == self.storages

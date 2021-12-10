@@ -25,11 +25,7 @@ def decide_policy(BaseEpsilon: float, current_state) -> int:
     """
     if current_state not in Q_table:
         return 0
-    # All boxes have some Q values
-    random_val = random()
-    if BaseEpsilon > random_val:
-        return 0
-    return 1
+    return BaseEpsilon < random()
 
 
 def greedy_choice(current_state: str, all_reachable_boxes: list) -> tuple:
@@ -77,9 +73,12 @@ def calculate_reward(my_game_board: GameBoard, picked_box_action_list, selected_
     return reward, total_number_boxes_done
 
 
-def simulate(board, action,step):
+def simulate(board, action, step):
+    state = (board.get_state(), action, step)
+    if state in step_dict:
+        return step_dict[state]
+
     path = board.BFS()[action]
-    # print("passing action = ", action)
     if not action or not step:
         return 1
     board = deepcopy(board)
@@ -87,28 +86,26 @@ def simulate(board, action,step):
     board.update_player(action[1])
     result = 0
     bfs = list(board.BFS().keys())
-    # print("bfs = ", bfs)
     for action in bfs:
-        result += simulate(board, action, step-1)
+        result += simulate(board, action, step - 1)
+    step_dict[state] = result
     return result
 
 
 def calculate_box_new_coordinate(selected_box_coordinate, action):
     selected_box_row, selected_box_column = selected_box_coordinate
     if action == "U":
-        new_box_coordinate = selected_box_row-1, selected_box_column
+        return selected_box_row - 1, selected_box_column
     if action == 'D':
-        new_box_coordinate = selected_box_row + 1, selected_box_column
+        return selected_box_row + 1, selected_box_column
     if action == 'L':
-        new_box_coordinate = selected_box_row, selected_box_column - 1
+        return selected_box_row, selected_box_column - 1
     if action == 'R':
-        new_box_coordinate = selected_box_row, selected_box_column + 1
-    else:
-        new_box_coordinate = (-1, -1)
-    return new_box_coordinate
+        return selected_box_row, selected_box_column + 1
+    return -1, -1
 
 
-def is_stuck(player_new_coordinate, box_new_coordinate, my_game_board, action):
+def is_stuck(box_new_coordinate, my_game_board, action):
     face_new_coordinate = (-1, -1)
     if action == 'U':
         face_new_coordinate = box_new_coordinate[0] - 1, box_new_coordinate[1]
@@ -123,9 +120,11 @@ def is_stuck(player_new_coordinate, box_new_coordinate, my_game_board, action):
 
     correspond_coordinate_1, correspond_coordinate_2 = (-1, -1)
     if action == 'U' or action == 'D':
-        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate, box_new_coordinate[1] - 1), (box_new_coordinate, box_new_coordinate[1] + 1)
+        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate, box_new_coordinate[1] - 1), (
+            box_new_coordinate, box_new_coordinate[1] + 1)
     elif action == 'L' or action == 'R':
-        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate[0] - 1, box_new_coordinate[1]), (box_new_coordinate[0] + 1, box_new_coordinate[1])
+        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate[0] - 1, box_new_coordinate[1]), (
+            box_new_coordinate[0] + 1, box_new_coordinate[1])
     if correspond_coordinate_1 in my_game_board.storages and correspond_coordinate_2 in my_game_board.storages:
         return True
 
@@ -136,7 +135,7 @@ def filter_out_box_together_selections(all_selections: list, my_game_board: Game
     new_all_selections = list()
     for selected_box_coordinate, action in all_selections:
         box_new_coordinate = calculate_box_new_coordinate(selected_box_coordinate, action)
-        if is_stuck(selected_box_coordinate, box_new_coordinate, my_game_board, action):
+        if is_stuck(box_new_coordinate, my_game_board, action):
             continue
         new_all_selections.append((selected_box_coordinate, action))
     return new_all_selections
