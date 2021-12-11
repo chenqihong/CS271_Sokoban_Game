@@ -13,6 +13,14 @@ def train(board):
 
 
 if __name__ == '__main__':
-    board = read_input("sokoban01.txt")
-    train(board)
-    print("Success" if evaluate(board) else "Fail")
+    fail_list = []
+    for file in os.listdir("input_files"):
+        if not file.startswith("sokoban"):
+            continue
+        dir = "input_files/" + file
+        board = read_input(dir)
+        train(board)
+        print(file + " Success" if evaluate(board) else fail_list.append(dir))
+        step_dict = {}
+        bfs_dict = {}
+    print(fail_list)

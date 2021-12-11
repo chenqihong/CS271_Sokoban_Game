@@ -102,7 +102,6 @@ def calculate_box_new_coordinate(selected_box_coordinate, action):
         return selected_box_row, selected_box_column - 1
     if action == 'R':
         return selected_box_row, selected_box_column + 1
-    return -1, -1
 
 
 def is_stuck(box_new_coordinate, my_game_board, action):
@@ -115,18 +114,18 @@ def is_stuck(box_new_coordinate, my_game_board, action):
         face_new_coordinate = box_new_coordinate, box_new_coordinate[1] - 1
     elif action == 'R':
         face_new_coordinate = box_new_coordinate, box_new_coordinate[1] + 1
-    if face_new_coordinate not in my_game_board.storages:
+    if face_new_coordinate not in my_game_board.boxes and face_new_coordinate not in my_game_board.walls:
         return False
 
-    correspond_coordinate_1, correspond_coordinate_2 = (-1, -1)
-    if action == 'U' or action == 'D':
-        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate, box_new_coordinate[1] - 1), (
-            box_new_coordinate, box_new_coordinate[1] + 1)
-    elif action == 'L' or action == 'R':
-        correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate[0] - 1, box_new_coordinate[1]), (
-            box_new_coordinate[0] + 1, box_new_coordinate[1])
-    if correspond_coordinate_1 in my_game_board.storages and correspond_coordinate_2 in my_game_board.storages:
-        return True
+    return True
+    # if action == 'U' or action == 'D':
+    #     correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate, box_new_coordinate[1] - 1), (
+    #         box_new_coordinate, box_new_coordinate[1] + 1)
+    # elif action == 'L' or action == 'R':
+    #     correspond_coordinate_1, correspond_coordinate_2 = (box_new_coordinate[0] - 1, box_new_coordinate[1]), (
+    #         box_new_coordinate[0] + 1, box_new_coordinate[1])
+    # if (correspond_coordinate_1 in my_game_board.walls and correspond_coordinate_2 in my_game_board.walls) or (correspond_coordinate_1 in my_game_board.boxes and correspond_coordinate_2 in my_game_board.boxes):
+    #     return True
 
 
 def filter_out_box_together_selections(all_selections: list, my_game_board: GameBoard):
