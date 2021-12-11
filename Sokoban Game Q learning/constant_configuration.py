@@ -1,7 +1,6 @@
 from collections import defaultdict
-import os
 
-TotalTrainingTimes = 3000
+TotalTrainingTimes = 20000
 
 Q_table = defaultdict(lambda: defaultdict(float))
 QTableSaveDir = "Qtable.pickle"

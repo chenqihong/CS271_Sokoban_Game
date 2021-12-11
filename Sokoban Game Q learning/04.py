@@ -13,6 +13,6 @@ def train(board):
 
 
 if __name__ == '__main__':
-    board = read_input("input_files/sokoban06a.txt")
+    board = read_input("input_files/sokoban04.txt")
     train(board)
     print("Success" if evaluate(board) else "fail")

@@ -2,7 +2,7 @@ from constant_configuration import *
 from game_board_class import *
 from random import random
 from copy import deepcopy
-
+import math
 
 def read_input(file):
     with open(file, 'r') as f:
@@ -138,3 +138,13 @@ def filter_out_box_together_selections(all_selections: list, my_game_board: Game
             continue
         new_all_selections.append((selected_box_coordinate, action))
     return new_all_selections
+
+
+def find_distance(pt1, board_storage):
+    x1, y1 = pt1
+    result = list()
+    for storage_coordinate in board_storage:
+        x2, y2 = storage_coordinate
+        dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        result.append((pt1, dist))
+    return sorted(result, key =lambda x: x[1])[0]

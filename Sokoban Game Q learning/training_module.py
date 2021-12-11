@@ -14,10 +14,10 @@ def training(board, BaseEpsilon: float) -> None:
     repeated_action_list = []
     all_bfs_path = board.BFS()
     all_selections = list(all_bfs_path.keys())
-    # from gui import Graph
-    # g = Graph(my_game_board)
+    from gui import Graph
+    #g = Graph(board)
     for i in range(TotalStepSize):
-        # g.update()
+        #g.update()
         current_state = board.get_state()
 
         if not all_selections:
@@ -37,8 +37,14 @@ def training(board, BaseEpsilon: float) -> None:
                     elif score == max_val:
                         result_max.append(selection)
                     result_all.append(selection)
-                if random() > 0.2:
+                if random() > 0.7:
                     selected_box, action = choice(result_max)
+                elif random() > 0.6:
+                    dist_result = list()
+                    for box_coordinate, action in all_selections:
+                        closest_dist = find_distance(box_coordinate, board.storages)
+                        dist_result.append(((box_coordinate, action), closest_dist))
+                    selected_box, action = sorted(dist_result, key=lambda x: x[1])[0][0]
                 else:
                     selected_box, action = choice(result_all)
         else:
@@ -67,3 +73,5 @@ def training(board, BaseEpsilon: float) -> None:
         else:
             repeated_action_list.append(selected_box)
         update_Q_Value(current_state, selected_box, action, reward, next_state)
+        if reward == 5000:
+            break

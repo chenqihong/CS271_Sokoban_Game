@@ -45,7 +45,7 @@ class GameBoard:
         self.boxes.add((box_x, box_y))
 
     def is_end_game(self):
-        return set(self.boxes) == self.storages
+        return self.boxes == self.storages
 
     def is_any_box_reach_end(self):
         return not self.storages.isdisjoint(self.boxes)

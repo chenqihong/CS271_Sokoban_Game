@@ -3,8 +3,9 @@ from base_implementation import *
 
 def evaluate(board):
     for i in range(1000):
+        if board.is_end_game():
+            return True
         all_bfs_path = board.BFS()
-        print("all bfs path = ", all_bfs_path)
         all_box_choices = list(all_bfs_path.keys())
         if not all_box_choices:
             return False

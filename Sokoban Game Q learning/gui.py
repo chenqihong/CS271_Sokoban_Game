@@ -13,8 +13,8 @@ class Graph(threading.Thread):
         self.zoom = 50
         self.playersize = 30
         self.boxsize = 50
-        self.width = 11 * self.zoom
-        self.height = 11 * self.zoom
+        self.width = 22 * self.zoom
+        self.height = 13 * self.zoom
         self.board = board
         self.start()
 
@@ -78,12 +78,13 @@ class Graph(threading.Thread):
         y = self.zoom * self.board.player_row
 
         self.canvas.coords(self.player, x + 10, y + 10, x + self.playersize + 10, y + self.playersize + 10)
-
-        for i in range(len(self.board.boxes)):
-            x = self.zoom * self.board.boxes[i][1]
-            y = self.zoom * self.board.boxes[i][0]
+        i = 0
+        for box in self.board.boxes:
+            x = self.zoom * box[1]
+            y = self.zoom * box[0]
             self.canvas.coords(self.boxes[i], x, y, x + self.boxsize, y + self.boxsize)
+            i+=1
 
 
 if __name__ == '__main__':
-    g = Graph(read_input("sokoban02.txt"))
+    g = Graph(read_input("input_files/sokoban02.txt"))
