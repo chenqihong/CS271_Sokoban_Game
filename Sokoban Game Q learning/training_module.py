@@ -39,12 +39,12 @@ def training(board, BaseEpsilon: float) -> None:
                     result_all.append(selection)
                 if random() > 0.7:
                     selected_box, action = choice(result_max)
-                elif random() > 0.6:
-                    dist_result = list()
-                    for box_coordinate, action in all_selections:
-                        closest_dist = find_distance(box_coordinate, board.storages)
-                        dist_result.append(((box_coordinate, action), closest_dist))
-                    selected_box, action = sorted(dist_result, key=lambda x: x[1])[0][0]
+                # elif random() > 0.6:
+                #     dist_result = list()
+                #     for box_coordinate, action in all_selections:
+                #         closest_dist = find_distance(box_coordinate, board.storages)
+                #         dist_result.append(((box_coordinate, action), closest_dist))
+                #     selected_box, action = sorted(dist_result, key=lambda x: x[1])[0][0]
                 else:
                     selected_box, action = choice(result_all)
         else:

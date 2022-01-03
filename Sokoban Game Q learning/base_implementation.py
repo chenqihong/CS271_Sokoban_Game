@@ -56,6 +56,10 @@ def calculate_reward(my_game_board: GameBoard, picked_box_action_list, selected_
         if number_boxes_done_now > total_number_boxes_done:
             reward = 500
             total_number_boxes_done = number_boxes_done_now
+            for storage_coordinate in my_game_board.storages.copy():
+                if storage_coordinate in my_game_board.boxes:
+                    set(my_game_board.storages).remove(storage_coordinate)
+            my_game_board.storages = frozenset(my_game_board.storages)
         else:
             if picked_box_action_list.count((selected_box_coordinate, action)) > 2:
                 reward = picked_box_action_list.count((selected_box_coordinate, action)) * (-5)

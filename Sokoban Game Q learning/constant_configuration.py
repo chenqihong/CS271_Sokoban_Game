@@ -1,12 +1,12 @@
 from collections import defaultdict
 
-TotalTrainingTimes = 20000
+TotalTrainingTimes = 180000
 
 Q_table = defaultdict(lambda: defaultdict(float))
 QTableSaveDir = "Qtable.pickle"
-TotalStepSize = 1000
-gamma = 0.9
-learningRate = 0.35
+TotalStepSize = 500
+gamma = 0.85
+learningRate = 0.45
 step_size = 2
 step_dict = {}
 bfs_dict = {}
